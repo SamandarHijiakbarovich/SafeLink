@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    APP SHELL — navigatsiya markazi
+    ==================================
+    Shell — MAUI da navigatsiyani boshqaradi.
+
+    Qanday ishlaydi:
+    - ShellContent → Tab bar da ko'rinadi
+    - Shell.Current.GoToAsync("routeName") → sahifalar orasida o'tish
+    - ".." → orqaga qaytish
+    - "///home" → root sahifaga qaytish (stack tozalanadi)
+
+    Navigatsiya oqimi:
+    HomePage →[SOS]→ SosHoldPage →[3s]→ AlertSentPage
+    HomePage →[Profil]→ ProfilePage
+-->
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:SafeLink.Views"
+    x:Class="SafeLink.AppShell"
+    Shell.NavBarIsVisible="False">
+
+    <!-- ─── Tab bar uslubi ───────────────────────────────── -->
+    <Shell.Resources>
+        <Style TargetType="Shell" ApplyToDerivedTypes="True">
+            <Setter Property="Shell.TabBarBackgroundColor" Value="#FFFFFF"/>
+            <Setter Property="Shell.TabBarForegroundColor" Value="#0A2540"/>
+            <Setter Property="Shell.TabBarUnselectedColor" Value="#94A3B8"/>
+            <Setter Property="Shell.TabBarTitleColor" Value="#0A2540"/>
+        </Style>
+    </Shell.Resources>
+
+    <!-- ─── Tab bar bilan asosiy sahifalar ──────────────── -->
+    <TabBar>
+        <ShellContent
+            Title="Bosh sahifa"
+            Route="home"
+            ContentTemplate="{DataTemplate views:HomePage}"/>
+
+        <ShellContent
+            Title="Tarix"
+            Route="history"
+            ContentTemplate="{DataTemplate views:HistoryPage}"/>
+
+        <ShellContent
+            Title="Profil"
+            Route="profile"
+            ContentTemplate="{DataTemplate views:ProfilePage}"/>
+    </TabBar>
+
+</Shell>

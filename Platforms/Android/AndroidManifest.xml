@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android ruxsatlar (Permissions)
+    ==================================
+    Har bir xususiyat uchun ruxsat so'rash shart.
+    Foydalanuvchi ruxsat bermasa — xususiyat ishlamaydi.
+
+    LOCATION → GPS joylashuv (SOS uchun MUHIM)
+    BLUETOOTH → Brelok bilan bog'lanish
+    RECORD_AUDIO → SOS paytida audio yozish
+    PHONE → 102 ga qo'ng'iroq
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/appicon"
+        android:roundIcon="@mipmap/appicon_round"
+        android:supportsRtl="true"
+        android:label="SafeLink"/>
+
+    <!-- Internet -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- GPS joylashuv -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Orqa fonda joylashuv (ixtiyoriy, keyinroq) -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/> -->
+
+    <!-- Bluetooth (Android 12+) -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+
+    <!-- Audio yozuv -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <!-- Telefon (102 ga qo'ng'iroq) -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+    <!-- Vibration (SOS ogohlantirishida) -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <!-- Wake lock (SOS paytida ekran yoniq turishi) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+</manifest>

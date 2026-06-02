@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    BOSH SAHIFA — SafeLink Home Screen
+    ======================================
+    Dizayn: Qora-ko'k (navy) fon, markazda pulslanuvchi qizil SOS tugmasi.
+
+    Tuzilma:
+    ┌─────────────────────────────────┐
+    │ [Logo]           [SafeLink] [🔔]│  ← Header
+    │   Assalomu alaykum,             │
+    │   Madina Karimova               │  ← Salomlashuv
+    │   🟢 Brelok ulangan · 87%       │  ← Brelok pill
+    │                                 │
+    │         [ 💥 SOS 💥 ]           │  ← Asosiy tugma
+    │      3 soniya bosib turing      │
+    │                                 │
+    │  📄 Himoya orderi faol          │  ← Pastki karta
+    ├─────────────────────────────────┤
+    │  🏠 Bosh  🕐 Tarix  👤 Profil  │  ← Tab bar
+    └─────────────────────────────────┘
+-->
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="SafeLink.Views.HomePage"
+    x:DataType="vm:HomeViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource Navy}">
+
+    <ContentPage.Resources>
+        <!-- Animatsiya uchun -->
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <!-- Asosiy layout: Grid ishlatamiz (qatlamlar uchun) -->
+    <Grid>
+
+        <!-- ─── 1. Orqa fon gradient ──────────────────────── -->
+        <BoxView Color="{StaticResource Navy}"
+                 HorizontalOptions="Fill"
+                 VerticalOptions="Fill"/>
+
+        <!-- ─── 2. Asosiy kontent (scroll bo'lmaydi) ─────── -->
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+
+            <!-- HEADER: Logo + Nom + Bell -->
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="Auto,*,Auto"
+                  Padding="24,50,24,0">
+
+                <!-- Logo ikonka -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#14FFFFFF"
+                        StrokeThickness="1"
+                        Stroke="#1EFFFFFF"
+                        StrokeShape="RoundRectangle 10"
+                        WidthRequest="34" HeightRequest="34"
+                        Margin="0,0,10,0">
+                    <Label Text="🛡"
+                           FontSize="18"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Brand nomi -->
+                <VerticalStackLayout Grid.Column="1" Spacing="1">
+                    <Label Text="SafeLink"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="White" CharacterSpacing="-0.2"/>
+                    <Label Text="Himoya tarmog'i faol"
+                           FontSize="11" TextColor="#8CFFFFFF"/>
+                </VerticalStackLayout>
+
+                <!-- Xabarnoma tugmasi -->
+                <Border Grid.Column="2"
+                        BackgroundColor="#14FFFFFF"
+                        StrokeThickness="1"
+                        Stroke="#1EFFFFFF"
+                        StrokeShape="RoundRectangle 11"
+                        WidthRequest="38" HeightRequest="38">
+                    <Label Text="🔔" FontSize="17"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenNotificationsCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+
+            <!-- SALOMLASHUV -->
+            <VerticalStackLayout Grid.Row="1"
+                                 Padding="24,22,24,14"
+                                 Spacing="4">
+                <Label Text="{Binding GreetingText}"
+                       FontSize="13" TextColor="#8CFFFFFF"/>
+                <Label Text="{Binding UserName}"
+                       FontSize="26" FontAttributes="Bold"
+                       TextColor="White" CharacterSpacing="-0.4"/>
+            </VerticalStackLayout>
+
+            <!-- BRELOK PILL -->
+            <Border Grid.Row="2"
+                    Margin="24,0,24,6"
+                    BackgroundColor="#DCFCE7"
+                    StrokeThickness="1"
+                    Stroke="#2E16A34A"
+                    StrokeShape="RoundRectangle 999"
+                    HorizontalOptions="Start"
+                    Padding="12,8">
+                <HorizontalStackLayout Spacing="8">
+                    <!-- Yashil dot (pulslanuvchi) -->
+                    <Ellipse WidthRequest="10" HeightRequest="10"
+                             Fill="{StaticResource Green}"
+                             VerticalOptions="Center"/>
+                    <Label Text="{Binding BrelokStatus}"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="#15803D"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- SOS TUGMA (markazda) -->
+            <Grid Grid.Row="3"
+                  HorizontalOptions="Center"
+                  VerticalOptions="Center">
+
+                <!-- Tashqi puls halqasi -->
+                <Ellipse x:Name="HaloOuter"
+                         WidthRequest="248" HeightRequest="248"
+                         Fill="{StaticResource Red}"
+                         Opacity="0.15"/>
+
+                <!-- Ichki puls halqasi -->
+                <Ellipse x:Name="HaloInner"
+                         WidthRequest="208" HeightRequest="208"
+                         Fill="{StaticResource Red}"
+                         Opacity="0.22"/>
+
+                <!-- SOS tugmaning o'zi -->
+                <Border x:Name="SosButton"
+                        WidthRequest="168" HeightRequest="168"
+                        BackgroundColor="{StaticResource Red}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 84">
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        Spacing="6">
+                        <Label Text="SOS"
+                               FontSize="52"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               CharacterSpacing="4"
+                               HorizontalOptions="Center"/>
+                        <Label Text="YORDAM CHAQIRISH"
+                               FontSize="10"
+                               FontAttributes="Bold"
+                               TextColor="#D9FFFFFF"
+                               CharacterSpacing="2"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Bosilganda SosHoldPage ga o'tish -->
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding TriggerSosCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+
+            <!-- PASTDAGI HIMOYA ORDERI KARTASI -->
+            <Border Grid.Row="4"
+                    Margin="16,0,16,16"
+                    BackgroundColor="#12FFFFFF"
+                    StrokeThickness="1"
+                    Stroke="#1AFFFFFF"
+                    StrokeShape="RoundRectangle 18"
+                    Padding="14,16"
+                    IsVisible="{Binding HasProtectionOrder}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <!-- Ikonka -->
+                    <Border Grid.Column="0"
+                            BackgroundColor="#2E2563EB"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10"
+                            WidthRequest="38" HeightRequest="38"
+                            Margin="0,0,12,0">
+                        <Label Text="📄" FontSize="17"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <!-- Matn -->
+                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                        <Label Text="Himoya orderi faol"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="White"/>
+                        <Label Text="{Binding ProtectionOrderInfo}"
+                               FontSize="11.5" TextColor="#8CFFFFFF"/>
+                    </VerticalStackLayout>
+
+                    <!-- O'ng strelka -->
+                    <Label Grid.Column="2" Text="›"
+                           FontSize="20" TextColor="#7FFFFFFF"
+                           VerticalOptions="Center"/>
+                </Grid>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenProfileCommand}"/>
+                </Border.GestureRecognizers>
+            </Border>
+
+            <!-- TAB BAR bo'shlig'i -->
+            <BoxView Grid.Row="5" HeightRequest="92" Color="Transparent"/>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>

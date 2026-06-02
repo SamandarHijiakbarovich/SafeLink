@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <!-- SOS matn — qizil rang, markazda -->
+  <text x="228" y="290"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="130"
+        font-weight="900"
+        text-anchor="middle"
+        fill="#E11D48"
+        letter-spacing="6">SOS</text>
+  <!-- Pastki kichik chiziq -->
+  <rect x="154" y="318" width="148" height="6" rx="3" fill="#E11D48" opacity="0.7"/>
+</svg>

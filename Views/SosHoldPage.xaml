@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    SOS HOLD EKRANI
+    ==============================
+    Foydalanuvchi SOS tugmasini bosib turganida bu ekran chiqadi.
+    3 soniya sanaydi, keyin AlertSentPage ga o'tadi.
+
+    Tuzilma:
+    ┌─────────────────────────────────┐
+    │    ● FAVQULODDA REJIM           │
+    │   Ogohlantirish yuborilmoqda   │
+    │  Barmog'ingizni olmang          │
+    │                                 │
+    │         ┌───────┐              │
+    │    ◯    │   2   │    ◯        │  ← Countdown ring
+    │         │ soniya│              │
+    │         └───────┘              │
+    │                                 │
+    │  ✅ Joylashuv aniqlandi         │
+    │  ✅ Audio yozib olinmoqda       │
+    │  ⬜ 102-ga ulanmoqda...        │
+    │                                 │
+    │      [ Bekor qilish ]           │
+    └─────────────────────────────────┘
+-->
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels"
+    x:Class="SafeLink.Views.SosHoldPage"
+    x:DataType="vm:SosHoldViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource RedDeep}">
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+
+        <!-- ─── TOP: Holat belgisi va sarlavha ────────────────── -->
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="24,60,24,0"
+                             HorizontalOptions="Center"
+                             Spacing="24">
+
+            <!-- "FAVQULODDA REJIM" pill -->
+            <Border BackgroundColor="#38000000"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 999"
+                    HorizontalOptions="Center"
+                    Padding="14,7">
+                <HorizontalStackLayout Spacing="8">
+                    <Ellipse x:Name="BlinkDot"
+                             WidthRequest="8" HeightRequest="8"
+                             Fill="White"
+                             VerticalOptions="Center"/>
+                    <Label Text="FAVQULODDA REJIM"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="White" CharacterSpacing="1"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Sarlavha -->
+            <Label Text="Ogohlantirish&#10;yuborilmoqda"
+                   FontSize="30" FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   CharacterSpacing="-0.4"
+                   LineHeight="1.15"/>
+
+            <Label Text="Barmog'ingizni tugmadan olmang"
+                   FontSize="14" TextColor="#BFFFFFFF"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <!-- ─── MARKAZIY: Countdown ────────────────────────────── -->
+        <Grid Grid.Row="1"
+              WidthRequest="260" HeightRequest="260"
+              HorizontalOptions="Center"
+              VerticalOptions="Center">
+
+            <!-- Tashqi halqa -->
+            <Ellipse WidthRequest="260" HeightRequest="260"
+                     Stroke="#26FFFFFF" StrokeThickness="6"
+                     Fill="Transparent"/>
+
+            <!-- Ichki doira — raqam -->
+            <Border WidthRequest="212" HeightRequest="212"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 106"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="4">
+                    <!-- Sanash raqami -->
+                    <Label Text="{Binding SecondsLeft}"
+                           FontSize="80" FontAttributes="Bold"
+                           TextColor="{StaticResource Red}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="-2"
+                           LineHeight="1"/>
+                    <Label Text="SONIYA"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource Muted}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="2"/>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ─── STATUS CHECK LIST ──────────────────────────────── -->
+        <VerticalStackLayout Grid.Row="2"
+                             Padding="24,0"
+                             Spacing="8"
+                             Margin="0,0,0,20">
+
+            <!-- Joylashuv -->
+            <Border BackgroundColor="#2D000000"
+                    StrokeThickness="1" Stroke="#14FFFFFF"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,11">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border Grid.Column="0"
+                            WidthRequest="22" HeightRequest="22"
+                            StrokeShape="RoundRectangle 11"
+                            Margin="0,0,12,0">
+                        <Border.BackgroundColor>
+                            <Binding Path="LocationFound" Converter="{StaticResource BoolToColorConverter}" ConverterParameter="White|Transparent"/>
+                        </Border.BackgroundColor>
+                        <Label Text="✓"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Red}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               IsVisible="{Binding LocationFound}"/>
+                    </Border>
+                    <Label Grid.Column="1"
+                           Text="Joylashuv aniqlandi"
+                           FontSize="14" FontAttributes="Bold"
+                           VerticalOptions="Center">
+                        <Label.TextColor>
+                            <Binding Path="LocationFound" Converter="{StaticResource BoolToColorConverter}" ConverterParameter="White|#99FFFFFF"/>
+                        </Label.TextColor>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <!-- Audio -->
+            <Border BackgroundColor="#2D000000"
+                    StrokeThickness="1" Stroke="#14FFFFFF"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,11">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border Grid.Column="0"
+                            WidthRequest="22" HeightRequest="22"
+                            StrokeShape="RoundRectangle 11"
+                            Margin="0,0,12,0">
+                        <Border.BackgroundColor>
+                            <Binding Path="AudioRecording" Converter="{StaticResource BoolToColorConverter}" ConverterParameter="White|Transparent"/>
+                        </Border.BackgroundColor>
+                        <Label Text="✓" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Red}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               IsVisible="{Binding AudioRecording}"/>
+                    </Border>
+                    <Label Grid.Column="1"
+                           Text="Audio yozib olinmoqda"
+                           FontSize="14" FontAttributes="Bold"
+                           VerticalOptions="Center">
+                        <Label.TextColor>
+                            <Binding Path="AudioRecording" Converter="{StaticResource BoolToColorConverter}" ConverterParameter="White|#99FFFFFF"/>
+                        </Label.TextColor>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <!-- 102 -->
+            <Border BackgroundColor="#2D000000"
+                    StrokeThickness="1" Stroke="#14FFFFFF"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,11">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border Grid.Column="0"
+                            WidthRequest="22" HeightRequest="22"
+                            StrokeShape="RoundRectangle 11"
+                            Margin="0,0,12,0">
+                        <Border.BackgroundColor>
+                            <Binding Path="PoliceConnecting" Converter="{StaticResource BoolToColorConverter}" ConverterParameter="White|Transparent"/>
+                        </Border.BackgroundColor>
+                        <Label Text="✓" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Red}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               IsVisible="{Binding PoliceConnecting}"/>
+                    </Border>
+                    <Label Grid.Column="1"
+                           Text="102-ga ulanmoqda…"
+                           FontSize="14" FontAttributes="Bold"
+                           TextColor="#99FFFFFF"
+                           VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+
+        </VerticalStackLayout>
+
+        <!-- ─── BEKOR QILISH TUGMASI ───────────────────────────── -->
+        <Button Grid.Row="3"
+                Text="Bekor qilish"
+                Command="{Binding CancelCommand}"
+                BackgroundColor="#47000000"
+                TextColor="White"
+                BorderColor="#2EFFFFFF"
+                BorderWidth="1"
+                CornerRadius="16"
+                HeightRequest="56"
+                FontSize="15"
+                FontAttributes="Bold"
+                Margin="24,0,24,48"/>
+
+    </Grid>
+</ContentPage>
