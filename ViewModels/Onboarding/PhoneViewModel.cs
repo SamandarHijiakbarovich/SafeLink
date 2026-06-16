@@ -10,8 +10,11 @@ public partial class PhoneViewModel(AuthService auth) : ObservableObject
     [ObservableProperty] string otpCode = "";
     [ObservableProperty] bool otpSent;
     [ObservableProperty] bool isBusy;
+    [ObservableProperty] bool hasError;
     [ObservableProperty] string errorText = "";
     [ObservableProperty] int countdown = 60;
+
+    partial void OnErrorTextChanged(string v) => HasError = !string.IsNullOrEmpty(v);
 
     [RelayCommand]
     async Task SendOtp()
