@@ -54,6 +54,7 @@ public static class MauiProgram
         builder.Services.AddTransient<SosHoldViewModel>();
         builder.Services.AddTransient<AlertSentViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<HistoryViewModel>();
 
         // Onboarding ViewModels
         builder.Services.AddTransient<WelcomeViewModel>();

@@ -1,30 +1,215 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-    TARIX SAHIFASI
-    ================
-    O'tgan SOS signallar tarixi.
-    Hozircha oddiy versiya — keyinroq kengaytiriladi.
--->
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels"
+    xmlns:models="clr-namespace:SafeLink.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SafeLink.Views.HistoryPage"
+    x:DataType="vm:HistoryViewModel"
     Shell.NavBarIsVisible="False"
     BackgroundColor="{StaticResource BgMain}">
 
-    <VerticalStackLayout HorizontalOptions="Center"
-                         VerticalOptions="Center"
-                         Spacing="16">
-        <Label Text="🕐"
-               FontSize="64"
-               HorizontalOptions="Center"/>
-        <Label Text="Tarix"
-               FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource Ink}"
-               HorizontalOptions="Center"/>
-        <Label Text="Signal tarixi bu yerda ko'rinadi"
-               FontSize="15" TextColor="{StaticResource Muted}"
-               HorizontalOptions="Center"/>
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*">
 
+        <!-- ─── HEADER ─────────────────────────────────────────── -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              Padding="24,56,24,16"
+              BackgroundColor="{StaticResource Card}">
+            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                <Label Text="Signal tarixi"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="{StaticResource Ink}" CharacterSpacing="-0.3"/>
+                <Label Text="Barcha favqulodda murojaat loglari"
+                       FontSize="12" TextColor="{StaticResource Muted}"/>
+            </VerticalStackLayout>
+
+            <!-- Yangilash tugmasi -->
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource CardAlt}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 11"
+                    WidthRequest="40" HeightRequest="40"
+                    VerticalOptions="Center">
+                <Label Text="↻" FontSize="18" TextColor="{StaticResource Navy}"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LoadHistoryCommand}"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <!-- separator -->
+        <BoxView Grid.Row="0" HeightRequest="1"
+                 Color="{StaticResource Line}"
+                 VerticalOptions="End"/>
+
+        <!-- ─── KONTENT ─────────────────────────────────────────── -->
+        <Grid Grid.Row="1">
+
+            <!-- Loading -->
+            <VerticalStackLayout IsVisible="{Binding IsLoading}"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Spacing="14">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   Color="{StaticResource Navy}"
+                                   WidthRequest="36" HeightRequest="36"/>
+                <Label Text="Ma'lumotlar yuklanmoqda…"
+                       FontSize="14" TextColor="{StaticResource Muted}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Bo'sh holat -->
+            <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Spacing="16" Padding="32,0">
+                <Border WidthRequest="80" HeightRequest="80"
+                        BackgroundColor="{StaticResource CardAlt}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                        HorizontalOptions="Center">
+                    <Label Text="🕐" FontSize="38"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Tarix bo'sh"
+                       FontSize="18" FontAttributes="Bold"
+                       TextColor="{StaticResource Ink}"
+                       HorizontalOptions="Center"/>
+                <Label Text="SOS tugmasini bosgandan keyin barcha murojaatlaringiz shu yerda ko'rinadi."
+                       FontSize="14" TextColor="{StaticResource Muted}"
+                       HorizontalTextAlignment="Center" LineHeight="1.5"/>
+            </VerticalStackLayout>
+
+            <!-- Ro'yxat -->
+            <CollectionView ItemsSource="{Binding Alerts}"
+                            IsVisible="{Binding IsEmpty, Converter={toolkit:InvertedBoolConverter}}"
+                            Margin="0,0,0,92">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="0"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AlertEvent">
+                        <SwipeView>
+                            <!-- Swipe aksiya: o'chirish (keyinroq) -->
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="O'chirish"
+                                               BackgroundColor="{StaticResource Red}"
+                                               IconImageSource="delete.png"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border Margin="16,10,16,0"
+                                    BackgroundColor="{StaticResource Card}"
+                                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                                    StrokeShape="RoundRectangle 18"
+                                    Padding="0">
+                                <Grid RowDefinitions="Auto,Auto" Padding="16,14,16,14" RowSpacing="10">
+
+                                    <!-- Yuqori qator: holat + vaqt -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+
+                                        <!-- Holat ikonka doirasi -->
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="{Binding StatusBgColor}"
+                                                StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                                                WidthRequest="36" HeightRequest="36"
+                                                Margin="0,0,12,0">
+                                            <Label Text="{Binding StatusIcon}"
+                                                   FontSize="15" FontAttributes="Bold"
+                                                   TextColor="{Binding StatusColor}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <!-- Manzil -->
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                            <Label Text="{Binding Address}"
+                                                   FontSize="14" FontAttributes="Bold"
+                                                   TextColor="{StaticResource Ink}"
+                                                   LineBreakMode="TailTruncation" MaxLines="1"/>
+                                            <Label Text="{Binding FormattedTime}"
+                                                   FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Holat badge -->
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="{Binding StatusBgColor}"
+                                                StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                                Padding="8,4" VerticalOptions="Center"
+                                                Margin="10,0,0,0">
+                                            <Label Text="{Binding StatusLabel}"
+                                                   FontSize="10.5" FontAttributes="Bold"
+                                                   TextColor="{Binding StatusColor}"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Ajratuvchi chiziq -->
+                                    <BoxView Grid.Row="0" HeightRequest="1"
+                                             Color="{StaticResource Line}"
+                                             VerticalOptions="End" Margin="-16,0,-16,0"/>
+
+                                    <!-- Pastki qator: meta ma'lumotlar -->
+                                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <!-- Politsiya ETA -->
+                                        <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                            <Border BackgroundColor="{StaticResource CardAlt}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                                    Padding="8,4">
+                                                <HorizontalStackLayout Spacing="5">
+                                                    <Label Text="🚔" FontSize="11"/>
+                                                    <Label FontSize="11.5" FontAttributes="Bold"
+                                                           TextColor="{StaticResource Ink2}">
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="~"/>
+                                                                <Span Text="{Binding PoliceEtaMinutes}"/>
+                                                                <Span Text=" daq"/>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </HorizontalStackLayout>
+                                            </Border>
+
+                                            <Border BackgroundColor="{StaticResource CardAlt}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                                    Padding="8,4">
+                                                <HorizontalStackLayout Spacing="5">
+                                                    <Label Text="📍" FontSize="11"/>
+                                                    <Label Text="GPS" FontSize="11.5"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource Ink2}"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </HorizontalStackLayout>
+
+                                        <!-- Batafsil strelka -->
+                                        <Label Grid.Column="1"
+                                               Text="›" FontSize="20"
+                                               TextColor="{StaticResource Faint}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+
+                                </Grid>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=OpenDetailCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <!-- Footer bo'sh joy -->
+                <CollectionView.Footer>
+                    <BoxView HeightRequest="16" Color="Transparent"/>
+                </CollectionView.Footer>
+            </CollectionView>
+
+        </Grid>
+
+    </Grid>
 </ContentPage>
