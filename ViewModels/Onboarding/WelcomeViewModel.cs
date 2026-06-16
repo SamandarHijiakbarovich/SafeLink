@@ -6,8 +6,8 @@ namespace SafeLink.ViewModels.Onboarding;
 public partial class WelcomeViewModel : ObservableObject
 {
     [RelayCommand]
-    async Task Register() => await Shell.Current.GoToAsync("//onboarding/phone");
+    async Task Register() => await Shell.Current.GoToAsync("//phone");
 
     [RelayCommand]
-    async Task Login() => await Shell.Current.GoToAsync("//onboarding/phone");
+    async Task Login() => await Shell.Current.GoToAsync("//phone");
 }

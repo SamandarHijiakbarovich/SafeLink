@@ -95,8 +95,7 @@
                             <SwipeView.RightItems>
                                 <SwipeItems>
                                     <SwipeItem Text="O'chirish"
-                                               BackgroundColor="{StaticResource Red}"
-                                               IconImageSource="delete.png"/>
+                                               BackgroundColor="{StaticResource Red}"/>
                                 </SwipeItems>
                             </SwipeView.RightItems>
 

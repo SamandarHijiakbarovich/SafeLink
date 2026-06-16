@@ -41,7 +41,7 @@ public partial class PhoneViewModel(AuthService auth) : ObservableObject
         var (success, isNew) = await auth.VerifyOtpAsync("+998" + Phone.Trim(), OtpCode);
         IsBusy = false;
         if (success)
-            await Shell.Current.GoToAsync(isNew ? "//onboarding/identity" : "//main");
+            await Shell.Current.GoToAsync(isNew ? "//identity" : "//main");
         else
             ErrorText = "Kod noto'g'ri yoki muddati o'tgan.";
     }

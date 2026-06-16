@@ -44,5 +44,5 @@ public partial class ContactsViewModel(SafeApiClient api) : ObservableObject
     }
 
     [RelayCommand]
-    async Task Continue() => await Shell.Current.GoToAsync("//onboarding/complete");
+    async Task Continue() => await Shell.Current.GoToAsync("//complete");
 }

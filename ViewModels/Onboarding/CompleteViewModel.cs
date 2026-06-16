@@ -6,7 +6,7 @@ namespace SafeLink.ViewModels.Onboarding;
 public partial class CompleteViewModel : ObservableObject
 {
     [RelayCommand]
-    async Task PairDevice() => await Shell.Current.GoToAsync("//main/pairing");
+    async Task PairDevice() => await Shell.Current.GoToAsync("//main");
 
     [RelayCommand]
     async Task Skip() => await Shell.Current.GoToAsync("//main");

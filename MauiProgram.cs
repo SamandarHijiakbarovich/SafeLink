@@ -6,7 +6,6 @@ using SafeLink.ViewModels;
 using SafeLink.ViewModels.Onboarding;
 using SafeLink.Views;
 using SafeLink.Views.Onboarding;
-using IBluetoothService = SafeLink.Services.Interfaces.IBluetoothService;
 
 namespace SafeLink;
 

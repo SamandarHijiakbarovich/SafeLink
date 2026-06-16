@@ -22,8 +22,8 @@ public partial class OrderViewModel : ObservableObject
     }
 
     [RelayCommand]
-    async Task Continue() => await Shell.Current.GoToAsync("//onboarding/contacts");
+    async Task Continue() => await Shell.Current.GoToAsync("//contacts");
 
     [RelayCommand]
-    async Task Skip() => await Shell.Current.GoToAsync("//onboarding/contacts");
+    async Task Skip() => await Shell.Current.GoToAsync("//contacts");
 }

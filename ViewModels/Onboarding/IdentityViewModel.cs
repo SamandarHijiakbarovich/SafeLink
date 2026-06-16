@@ -22,6 +22,6 @@ public partial class IdentityViewModel(SafeApiClient api) : ObservableObject
         IsBusy = true;
         await api.PostAsync<object>("/profile", new { fullName = FullName, nationalId = NationalId });
         IsBusy = false;
-        await Shell.Current.GoToAsync("//onboarding/order");
+        await Shell.Current.GoToAsync("//order");
     }
 }
