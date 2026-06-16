@@ -1,146 +1,245 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-    BRELOKNI ULASH EKRANI
-    =======================
-    Bluetooth LE orqali SafeLink SL-100 brelokni ulash.
-    3 qadam: 1) Qidirish → 2) Topildi → 3) Ulandi
--->
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels"
+    xmlns:ble="clr-namespace:SafeLink.Services.Interfaces"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SafeLink.Views.PairingPage"
+    x:DataType="vm:PairingViewModel"
     Shell.NavBarIsVisible="False"
     BackgroundColor="{StaticResource BgMain}">
 
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Header -->
-        <Grid Grid.Row="0"
-              ColumnDefinitions="Auto,*,Auto"
-              Padding="24,56,24,0">
+        <!-- HEADER -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="24,56,24,14">
             <Border Grid.Column="0"
                     BackgroundColor="{StaticResource Card}"
                     StrokeThickness="1" Stroke="{StaticResource Line}"
                     StrokeShape="RoundRectangle 11"
                     WidthRequest="38" HeightRequest="38">
-                <Label Text="‹" FontSize="22" TextColor="{StaticResource Ink}"
+                <Label Text="‹" FontSize="20" TextColor="{StaticResource Ink}"
                        HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnBackTapped"/>
+                    <TapGestureRecognizer Command="{Binding SkipCommand}"/>
                 </Border.GestureRecognizers>
             </Border>
-            <Label Grid.Column="1"
-                   Text="1 / 3 qadam"
-                   FontSize="13" FontAttributes="Bold"
-                   TextColor="{StaticResource Muted}"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   CharacterSpacing="0.4"/>
+            <Label Grid.Column="1" Text="Brelok ulash"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource Ink}"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
-        <!-- Kontent -->
+        <!-- KONTENT -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="0">
+            <VerticalStackLayout Spacing="0" Padding="16,0">
 
-                <!-- Brelok illustration -->
-                <Border Margin="16,18,16,0"
-                        HeightRequest="280"
-                        BackgroundColor="{StaticResource Navy2}"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 24">
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         Spacing="8">
-                        <!-- Radar halqalar (animatsion) -->
-                        <Grid WidthRequest="200" HeightRequest="200"
-                              HorizontalOptions="Center">
-                            <Ellipse x:Name="Radar1"
-                                     WidthRequest="180" HeightRequest="180"
-                                     Stroke="#1EFFFFFF" StrokeThickness="1"
-                                     Fill="Transparent"/>
-                            <Ellipse x:Name="Radar2"
-                                     WidthRequest="140" HeightRequest="140"
-                                     Stroke="#1EFFFFFF" StrokeThickness="1"
-                                     Fill="Transparent"/>
-                            <!-- Brelok emoji (keyinroq SVG bilan almashtirish) -->
-                            <Label Text="🔑"
-                                   FontSize="72"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Grid>
-                    </VerticalStackLayout>
-                </Border>
+                <!-- Hero: brelok illyustratsiya -->
+                <Border StrokeThickness="0" StrokeShape="RoundRectangle 24"
+                        HeightRequest="280">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#13325F" Offset="0"/>
+                            <GradientStop Color="#0A2540" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <!-- Radar halqalari -->
+                        <Ellipse WidthRequest="240" HeightRequest="240"
+                                 Stroke="#12FFFFFF" StrokeThickness="1"
+                                 HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Ellipse WidthRequest="180" HeightRequest="180"
+                                 Stroke="#12FFFFFF" StrokeThickness="1"
+                                 HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Ellipse WidthRequest="120" HeightRequest="120"
+                                 Stroke="#12FFFFFF" StrokeThickness="1"
+                                 HorizontalOptions="Center" VerticalOptions="Center"/>
 
-                <!-- Matn -->
-                <VerticalStackLayout Padding="24,24,24,0"
-                                     HorizontalOptions="Center"
-                                     Spacing="8">
-                    <Label Text="Brelokni telefoningizga ulang"
-                           FontSize="22" FontAttributes="Bold"
-                           TextColor="{StaticResource Ink}"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           CharacterSpacing="-0.3"/>
-                    <Label Text="Brelok tugmasini 5 soniya bosib turing. Ko'k chiroq miltillaganda qurilma topiladi."
-                           FontSize="14" TextColor="{StaticResource Muted}"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           LineHeight="1.5"/>
-                </VerticalStackLayout>
-
-                <!-- Topilgan qurilma kartasi -->
-                <Border Margin="16,20,16,0"
-                        BackgroundColor="{StaticResource Card}"
-                        StrokeThickness="1" Stroke="{StaticResource Line}"
-                        StrokeShape="RoundRectangle 18"
-                        Padding="16">
-                    <Grid ColumnDefinitions="Auto,*,Auto">
-                        <Border Grid.Column="0"
-                                WidthRequest="38" HeightRequest="38"
-                                BackgroundColor="#1A2563EB"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 10"
-                                Margin="0,0,14,0">
-                            <Label Text="🔵" FontSize="20"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="SafeLink SL-100"
-                                   FontSize="14" FontAttributes="Bold"
-                                   TextColor="{StaticResource Ink}"/>
-                            <Label Text="Topildi · 0.3 m · signal kuchli"
-                                   FontSize="12" TextColor="{StaticResource Muted}"/>
+                        <!-- Brelok tanasi -->
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center" Spacing="0">
+                            <Ellipse WidthRequest="18" HeightRequest="18"
+                                     Stroke="#94A3B8" StrokeThickness="2.5"
+                                     HorizontalOptions="Center"/>
+                            <BoxView WidthRequest="8" HeightRequest="10" Color="#94A3B8"
+                                     CornerRadius="2" HorizontalOptions="Center" Margin="0,-1,0,0"/>
+                            <Border WidthRequest="96" HeightRequest="144"
+                                    StrokeThickness="1.5" Stroke="{StaticResource Navy3}"
+                                    StrokeShape="RoundRectangle 22" Margin="0,-1,0,0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#1F2937" Offset="0"/>
+                                        <GradientStop Color="#0F172A" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <VerticalStackLayout Padding="0,10,0,0" Spacing="0">
+                                    <BoxView HeightRequest="3" WidthRequest="48"
+                                             Color="#2EFFFFFF" CornerRadius="1.5"
+                                             HorizontalOptions="Center" Margin="0,0,0,12"/>
+                                    <Border WidthRequest="68" HeightRequest="68"
+                                            StrokeThickness="1.5" Stroke="#26FFFFFF"
+                                            StrokeShape="RoundRectangle 34"
+                                            HorizontalOptions="Center">
+                                        <Border.Background>
+                                            <RadialGradientBrush Center="0.35,0.3" Radius="0.7">
+                                                <GradientStop Color="#F43F5E" Offset="0"/>
+                                                <GradientStop Color="#E11D48" Offset="0.6"/>
+                                                <GradientStop Color="#9F1239" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Border.Background>
+                                        <Label Text="SOS" FontSize="13" FontAttributes="Bold"
+                                               TextColor="White" CharacterSpacing="1.2"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <Ellipse WidthRequest="9" HeightRequest="9" Fill="#22D3EE"
+                                             HorizontalOptions="Center" Margin="0,14,0,0"/>
+                                    <Label Text="SAFELINK SL-100" FontSize="7" FontAttributes="Bold"
+                                           TextColor="#55FFFFFF" CharacterSpacing="1.5"
+                                           HorizontalOptions="Center" Margin="0,5,0,0"/>
+                                </VerticalStackLayout>
+                            </Border>
                         </VerticalStackLayout>
-                        <!-- Signal bars -->
-                        <HorizontalStackLayout Grid.Column="2"
-                                               Spacing="3"
-                                               VerticalOptions="Center">
-                            <BoxView Color="{StaticResource Green}"
-                                     WidthRequest="4" HeightRequest="14" CornerRadius="2"/>
-                            <BoxView Color="{StaticResource Green}"
-                                     WidthRequest="4" HeightRequest="18" CornerRadius="2"/>
-                            <BoxView Color="{StaticResource Green}"
-                                     WidthRequest="4" HeightRequest="22" CornerRadius="2"/>
-                            <BoxView Color="{StaticResource Green}"
-                                     WidthRequest="4" HeightRequest="26" CornerRadius="2"/>
-                        </HorizontalStackLayout>
+
+                        <!-- Ulandi badge -->
+                        <Border IsVisible="{Binding IsConnected}"
+                                BackgroundColor="{StaticResource GreenSoft}"
+                                StrokeThickness="1" Stroke="#4016A34A"
+                                StrokeShape="RoundRectangle 999"
+                                Padding="10,6"
+                                HorizontalOptions="Center" VerticalOptions="End"
+                                Margin="0,0,0,16">
+                            <HorizontalStackLayout Spacing="6">
+                                <Ellipse WidthRequest="8" HeightRequest="8"
+                                         Fill="{StaticResource Green}" VerticalOptions="Center"/>
+                                <Label Text="{Binding ConnectedName}"
+                                       FontSize="12" FontAttributes="Bold" TextColor="#15803D"/>
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
                 </Border>
 
+                <!-- Ko'rsatma -->
+                <VerticalStackLayout Spacing="8" Margin="8,22,8,0">
+                    <Label Text="Brelokni telefoningizga ulang"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}" CharacterSpacing="-0.3"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    <Label Text="Brelok tugmasini 5 soniya bosib turing.&#10;Ko'k chiroq miltillaganda qurilma topiladi."
+                           FontSize="14" TextColor="{StaticResource Muted}"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                           LineHeight="1.5"/>
+                </VerticalStackLayout>
+
+                <!-- Status -->
+                <Border BackgroundColor="{StaticResource CardAlt}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                        Padding="14,10" Margin="0,16,0,0" HorizontalOptions="Center">
+                    <HorizontalStackLayout Spacing="8">
+                        <ActivityIndicator IsRunning="{Binding IsScanning}"
+                                           IsVisible="{Binding IsScanning}"
+                                           Color="{StaticResource Navy}"
+                                           WidthRequest="16" HeightRequest="16"/>
+                        <ActivityIndicator IsRunning="{Binding IsConnecting}"
+                                           IsVisible="{Binding IsConnecting}"
+                                           Color="{StaticResource Navy}"
+                                           WidthRequest="16" HeightRequest="16"/>
+                        <Label Text="{Binding StatusText}"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{StaticResource Ink2}" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Topilgan qurilmalar -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Devices}"
+                                     Spacing="10" Margin="0,16,0,0">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="ble:BleDevice">
+                            <Border BackgroundColor="{StaticResource Card}"
+                                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                                    StrokeShape="RoundRectangle 16" Padding="14,12">
+                                <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="12">
+                                    <Border Grid.Column="0"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 10"
+                                            WidthRequest="42" HeightRequest="42" VerticalOptions="Center">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#1F4480" Offset="0"/>
+                                                <GradientStop Color="#0A2540" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Label Text="📡" FontSize="18"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="14" FontAttributes="Bold"
+                                               TextColor="{StaticResource Ink}"/>
+                                        <Label FontSize="11.5" TextColor="{StaticResource Muted}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Topildi · "/>
+                                                    <Span Text="{Binding Rssi}"/>
+                                                    <Span Text=" dBm"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </VerticalStackLayout>
+
+                                    <!-- Signal bars -->
+                                    <HorizontalStackLayout Grid.Column="2"
+                                                           Spacing="3" VerticalOptions="Center">
+                                        <BoxView WidthRequest="4" HeightRequest="10" CornerRadius="2"
+                                                 Color="{StaticResource Green}" VerticalOptions="End"/>
+                                        <BoxView WidthRequest="4" HeightRequest="14" CornerRadius="2"
+                                                 Color="{StaticResource Green}" VerticalOptions="End"/>
+                                        <BoxView WidthRequest="4" HeightRequest="18" CornerRadius="2"
+                                                 Color="{StaticResource Green}" VerticalOptions="End"/>
+                                        <BoxView WidthRequest="4" HeightRequest="22" CornerRadius="2"
+                                                 Color="{StaticResource Green}" VerticalOptions="End"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PairingViewModel}}, Path=ConnectCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="16" Color="Transparent"/>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Ulash tugmasi -->
-        <Button Grid.Row="2"
-                Text="Qurilmani ulash"
-                BackgroundColor="{StaticResource Navy}"
-                TextColor="White"
-                CornerRadius="16"
-                HeightRequest="56"
-                FontSize="15"
-                FontAttributes="Bold"
-                Margin="16,0,16,48"/>
+        <!-- PASTKI TUGMALAR -->
+        <VerticalStackLayout Grid.Row="2" Spacing="8" Padding="16,8,16,44">
+            <Button IsVisible="{Binding IsScanning, Converter={StaticResource InvertBool}}"
+                    Text="Qurilmalarni izlash"
+                    Command="{Binding StartScanCommand}"
+                    IsEnabled="{Binding IsConnecting, Converter={StaticResource InvertBool}}"
+                    BackgroundColor="{StaticResource Navy}"
+                    TextColor="White" FontAttributes="Bold" FontSize="15"
+                    HeightRequest="56" CornerRadius="16"/>
+            <Button IsVisible="{Binding IsScanning}"
+                    Text="To'xtatish"
+                    Command="{Binding StopScanCommand}"
+                    BackgroundColor="{StaticResource CardAlt}"
+                    TextColor="{StaticResource Ink}" FontAttributes="Bold" FontSize="15"
+                    HeightRequest="56" CornerRadius="16"/>
+            <Button Text="Keyinroq ulash"
+                    Command="{Binding SkipCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Muted}"
+                    FontSize="14" HeightRequest="44" BorderWidth="0"/>
+        </VerticalStackLayout>
 
     </Grid>
 </ContentPage>

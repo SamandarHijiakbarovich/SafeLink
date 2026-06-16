@@ -6,6 +6,7 @@ using SafeLink.ViewModels;
 using SafeLink.ViewModels.Onboarding;
 using SafeLink.Views;
 using SafeLink.Views.Onboarding;
+using IBluetoothService = SafeLink.Services.Interfaces.IBluetoothService;
 
 namespace SafeLink;
 
@@ -48,6 +49,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
         builder.Services.AddSingleton<IEmergencyService, EmergencyService>();
+        builder.Services.AddSingleton<IBluetoothService, BluetoothService>();
 
         // ─── ViewModels ─────────────────────────────────────────
         builder.Services.AddTransient<HomeViewModel>();
@@ -55,6 +57,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AlertSentViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<PairingViewModel>();
 
         // Onboarding ViewModels
         builder.Services.AddTransient<WelcomeViewModel>();
