@@ -42,7 +42,8 @@ public static class MauiProgram
             });
 
         // ─── Xizmatlar (Services) ───────────────────────────────
-        // Interfeys → Implementatsiya: testlash oson bo'ladi
+        builder.Services.AddSingleton<SafeApiClient>();
+        builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
         builder.Services.AddSingleton<IEmergencyService, EmergencyService>();
 
