@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using SafeLink.Services;
 using SafeLink.Services.Interfaces;
 using SafeLink.ViewModels;
+using SafeLink.ViewModels.Onboarding;
 using SafeLink.Views;
+using SafeLink.Views.Onboarding;
 
 namespace SafeLink;
 
@@ -48,20 +50,34 @@ public static class MauiProgram
         builder.Services.AddSingleton<IEmergencyService, EmergencyService>();
 
         // ─── ViewModels ─────────────────────────────────────────
-        // AddTransient: har bir sahifa ochilganda yangi ViewModel
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<SosHoldViewModel>();
         builder.Services.AddTransient<AlertSentViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
 
+        // Onboarding ViewModels
+        builder.Services.AddTransient<WelcomeViewModel>();
+        builder.Services.AddTransient<PhoneViewModel>();
+        builder.Services.AddTransient<IdentityViewModel>();
+        builder.Services.AddTransient<OrderViewModel>();
+        builder.Services.AddTransient<ContactsViewModel>();
+        builder.Services.AddTransient<CompleteViewModel>();
+
         // ─── Views (Sahifalar) ──────────────────────────────────
-        // Sahifa → ViewModel ni DI uzatadi (konstruktor orqali)
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<SosHoldPage>();
         builder.Services.AddTransient<AlertSentPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<HistoryPage>();
         builder.Services.AddTransient<PairingPage>();
+
+        // Onboarding Views
+        builder.Services.AddTransient<WelcomePage>();
+        builder.Services.AddTransient<PhonePage>();
+        builder.Services.AddTransient<IdentityPage>();
+        builder.Services.AddTransient<OrderPage>();
+        builder.Services.AddTransient<ContactsPage>();
+        builder.Services.AddTransient<CompletePage>();
 
         // ─── AppShell ───────────────────────────────────────────
         builder.Services.AddSingleton<AppShell>();

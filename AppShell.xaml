@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-    APP SHELL — navigatsiya markazi
-    ==================================
-    Shell — MAUI da navigatsiyani boshqaradi.
-
-    Qanday ishlaydi:
-    - ShellContent → Tab bar da ko'rinadi
-    - Shell.Current.GoToAsync("routeName") → sahifalar orasida o'tish
-    - ".." → orqaga qaytish
-    - "///home" → root sahifaga qaytish (stack tozalanadi)
-
-    Navigatsiya oqimi:
-    HomePage →[SOS]→ SosHoldPage →[3s]→ AlertSentPage
-    HomePage →[Profil]→ ProfilePage
--->
 <Shell
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:SafeLink.Views"
+    xmlns:onb="clr-namespace:SafeLink.Views.Onboarding"
     x:Class="SafeLink.AppShell"
     Shell.NavBarIsVisible="False">
 
-    <!-- ─── Tab bar uslubi ───────────────────────────────── -->
     <Shell.Resources>
         <Style TargetType="Shell" ApplyToDerivedTypes="True">
             <Setter Property="Shell.TabBarBackgroundColor" Value="#FFFFFF"/>
@@ -31,22 +16,28 @@
         </Style>
     </Shell.Resources>
 
-    <!-- ─── Tab bar bilan asosiy sahifalar ──────────────── -->
-    <TabBar>
-        <ShellContent
-            Title="Bosh sahifa"
-            Route="home"
-            ContentTemplate="{DataTemplate views:HomePage}"/>
+    <!-- ─── Onboarding oqimi (tab bar yo'q) ─────────────────── -->
+    <ShellContent Route="welcome" Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:WelcomePage}"/>
+    <ShellContent Route="phone"    Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:PhonePage}"/>
+    <ShellContent Route="identity" Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:IdentityPage}"/>
+    <ShellContent Route="order"    Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:OrderPage}"/>
+    <ShellContent Route="contacts" Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:ContactsPage}"/>
+    <ShellContent Route="complete" Shell.NavBarIsVisible="False"
+                  ContentTemplate="{DataTemplate onb:CompletePage}"/>
 
-        <ShellContent
-            Title="Tarix"
-            Route="history"
-            ContentTemplate="{DataTemplate views:HistoryPage}"/>
-
-        <ShellContent
-            Title="Profil"
-            Route="profile"
-            ContentTemplate="{DataTemplate views:ProfilePage}"/>
+    <!-- ─── Asosiy ilova (tab bar bilan) ─────────────────────── -->
+    <TabBar Route="main">
+        <ShellContent Title="Bosh sahifa" Route="home"
+                      ContentTemplate="{DataTemplate views:HomePage}"/>
+        <ShellContent Title="Tarix"       Route="history"
+                      ContentTemplate="{DataTemplate views:HistoryPage}"/>
+        <ShellContent Title="Profil"      Route="profile"
+                      ContentTemplate="{DataTemplate views:ProfilePage}"/>
     </TabBar>
 
 </Shell>

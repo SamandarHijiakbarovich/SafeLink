@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels.Onboarding"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="SafeLink.Views.Onboarding.IdentityPage"
+    x:DataType="vm:IdentityViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="0">
+
+            <!-- Progress -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,56,0,0">
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Shaxsingizni&#10;tasdiqlang"
+                   FontSize="26" FontAttributes="Bold"
+                   TextColor="{StaticResource Ink}" CharacterSpacing="-0.4"
+                   LineHeight="1.2" Margin="0,32,0,0"/>
+            <Label Text="Ma'lumotlar Davlat xizmatlari portali orqali tekshiriladi."
+                   FontSize="14" TextColor="{StaticResource Muted}"
+                   LineHeight="1.5" Margin="0,10,0,0"/>
+
+            <!-- F.I.SH -->
+            <Label Text="F.I.SH" FontSize="11" FontAttributes="Bold"
+                   TextColor="{StaticResource Muted}" CharacterSpacing="0.8"
+                   Margin="4,28,0,8"/>
+            <Border BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 14" Padding="16,0" HeightRequest="56">
+                <Entry Text="{Binding FullName}"
+                       Placeholder="Familiya Ism Sharif"
+                       FontSize="15" FontAttributes="Bold"
+                       TextColor="{StaticResource Ink}"
+                       PlaceholderColor="{StaticResource Faint}"
+                       BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- JShShIR -->
+            <Label Text="JShShIR" FontSize="11" FontAttributes="Bold"
+                   TextColor="{StaticResource Muted}" CharacterSpacing="0.8"
+                   Margin="4,16,0,8"/>
+            <Border BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 14" Padding="16,0" HeightRequest="56">
+                <Entry Text="{Binding NationalId}"
+                       Placeholder="14 ta raqam"
+                       Keyboard="Numeric" MaxLength="14"
+                       FontSize="15" FontAttributes="Bold"
+                       TextColor="{StaticResource Ink}"
+                       PlaceholderColor="{StaticResource Faint}"
+                       BackgroundColor="Transparent"/>
+            </Border>
+
+            <!-- my.gov.uz badge -->
+            <Border BackgroundColor="#0A2563EB"
+                    StrokeThickness="1" Stroke="#262563EB"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14" Margin="0,14,0,0">
+                <HorizontalStackLayout Spacing="10">
+                    <Border BackgroundColor="{StaticResource Navy}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                            WidthRequest="28" HeightRequest="28">
+                        <Label Text="🛡" FontSize="14"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="my.gov.uz orqali tekshiriladi"
+                               FontSize="12.5" FontAttributes="Bold"
+                               TextColor="{StaticResource Navy}"/>
+                        <Label Text="Bir Marta Tasdiqlash · 2 daqiqa"
+                               FontSize="11" TextColor="{StaticResource Muted}"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Davom etish -->
+            <Button Text="Davom etish"
+                    Command="{Binding ContinueCommand}"
+                    IsEnabled="{Binding CanContinue}"
+                    BackgroundColor="{StaticResource Navy}"
+                    TextColor="White" FontAttributes="Bold" FontSize="15"
+                    HeightRequest="56" CornerRadius="16"
+                    Margin="0,32,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
