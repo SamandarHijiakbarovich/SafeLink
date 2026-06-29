@@ -44,6 +44,10 @@
     <Color x:Key="SecondaryDarkText">#FFFFFF</Color>
     <Color x:Key="Tertiary">#2563EB</Color>
 
+    <Color x:Key="Magenta">#E11D48</Color>
+    <Color x:Key="MidnightBlue">#0A2540</Color>
+    <Color x:Key="OffBlack">#1f1f1f</Color>
+
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
     <Color x:Key="Gray300">#ACACAC</Color>
