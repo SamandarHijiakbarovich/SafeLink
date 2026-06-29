@@ -80,37 +80,6 @@ using (var scope = app.Services.CreateScope())
             devUser.IsVerified = true;
         }
         db.SaveChanges();
-
-        // DEV: dispatch dashboard uchun namuna hodisalar (agar hali yo'q bo'lsa)
-        if (!db.Alerts.Any())
-        {
-            var now = DateTime.UtcNow;
-            (string name, string phone, string addr, double lat, double lon, string ds, int mins)[] demo =
-            [
-                ("Karimova Madina A.",  "+998901112201", "Mirzo Ulug'bek t., Buyuk Ipak yo'li 12", 41.330, 69.335, "New",    2),
-                ("Saidova Dilnoza R.",  "+998901112202", "Yunusobod t., Amir Temur 88",            41.367, 69.289, "EnRoute", 17),
-                ("Rasulova Nodira Sh.", "+998901112203", "Olmazor t., Beruniy ko'chasi 23",        41.342, 69.205, "OnScene", 32),
-                ("Mirzayeva Lola K.",   "+998901112204", "Sirg'ali t., Bunyodkor 145",             41.230, 69.245, "Closed",  55),
-            ];
-            foreach (var (name, phone, addr, lat, lon, ds, mins) in demo)
-            {
-                var u = db.Users.FirstOrDefault(x => x.PhoneNumber == phone)
-                        ?? new User { PhoneNumber = phone, FullName = name, IsVerified = true };
-                if (u.Id == 0) db.Users.Add(u);
-                db.SaveChanges();
-                db.Alerts.Add(new Alert
-                {
-                    UserId = u.Id,
-                    Address = addr, Latitude = lat, Longitude = lon,
-                    DispatchStatus = ds,
-                    Status = ds == "Closed" ? AlertStatus.Resolved : AlertStatus.Active,
-                    PoliceEtaMinutes = 4,
-                    SentAt = now.AddMinutes(-mins),
-                    ResolvedAt = ds == "Closed" ? now.AddMinutes(-mins + 20) : null,
-                });
-            }
-            db.SaveChanges();
-        }
     }
 }
 

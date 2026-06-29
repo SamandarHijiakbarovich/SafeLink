@@ -47,8 +47,8 @@ public partial class HistoryViewModel(SafeApiClient api) : ObservableObject
         }
         catch
         {
-            // Oflayn: namuna ma'lumotlar ko'rsatish
-            LoadDemoData();
+            // Tarmoq xatosi — soxta ma'lumot ko'rsatmaymiz (bo'sh holat ko'rinadi)
+            HasError = true;
         }
         finally
         {
@@ -81,14 +81,6 @@ public partial class HistoryViewModel(SafeApiClient api) : ObservableObject
         {
             await page.DisplayAlert("SOS signal tafsiloti", info, "Yopish");
         }
-    }
-
-    void LoadDemoData()
-    {
-        Alerts.Clear();
-        Alerts.Add(new AlertEvent { Id = 1, SentAt = DateTime.Now.AddDays(-1).AddHours(-3), Address = "Mirzo Ulug'bek t., Buyuk Ipak yo'li 12", Status = AlertStatus.Resolved, PoliceEtaMinutes = 4 });
-        Alerts.Add(new AlertEvent { Id = 2, SentAt = DateTime.Now.AddDays(-5).AddHours(-7), Address = "Yunusobod t., Amir Temur ko'ch. 45", Status = AlertStatus.FalseAlarm, PoliceEtaMinutes = 6 });
-        Alerts.Add(new AlertEvent { Id = 3, SentAt = DateTime.Now.AddDays(-12).AddHours(-2), Address = "Chilonzor t., Qoratosh ko'ch. 8", Status = AlertStatus.Resolved, PoliceEtaMinutes = 5 });
     }
 
     record AlertDto(
