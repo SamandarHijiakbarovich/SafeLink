@@ -32,15 +32,21 @@ public static class AuthEndpoints
         });
 
         // 2. OTP tasdiqlash + JWT olish
-        g.MapPost("/verify-otp", async (VerifyOtpRequest req, AppDbContext db, TokenService tokens) =>
+        g.MapPost("/verify-otp", async (VerifyOtpRequest req, AppDbContext db, TokenService tokens, IHostEnvironment env) =>
         {
-            var otp = await db.OtpCodes
-                .Where(o => o.PhoneNumber == req.Phone && o.Code == req.Code && !o.IsUsed && o.ExpiresAt > DateTime.UtcNow)
-                .FirstOrDefaultAsync();
+            // DEV: "000000" — master kod (kod so'rab o'tirmaslik uchun, faqat Development'da)
+            bool devBypass = env.IsDevelopment() && req.Code == "000000";
 
-            if (otp is null) return Results.BadRequest(new { error = "Kod noto'g'ri yoki muddati o'tgan" });
+            if (!devBypass)
+            {
+                var otp = await db.OtpCodes
+                    .Where(o => o.PhoneNumber == req.Phone && o.Code == req.Code && !o.IsUsed && o.ExpiresAt > DateTime.UtcNow)
+                    .FirstOrDefaultAsync();
 
-            otp.IsUsed = true;
+                if (otp is null) return Results.BadRequest(new { error = "Kod noto'g'ri yoki muddati o'tgan" });
+
+                otp.IsUsed = true;
+            }
 
             var user = await db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == req.Phone);
             bool isNew = user is null;

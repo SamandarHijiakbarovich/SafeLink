@@ -48,6 +48,9 @@
                     <Label Text="···" FontSize="13" FontAttributes="Bold"
                            TextColor="{StaticResource Navy2}"
                            HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowMenuCommand}"/>
+                    </Border.GestureRecognizers>
                 </Border>
             </Grid>
 
@@ -58,8 +61,11 @@
                     StrokeShape="RoundRectangle 22"
                     Padding="20">
                 <VerticalStackLayout Spacing="0">
-                    <!-- Avatar + Ism -->
+                    <!-- Avatar + Ism (bosilsa tahrirlanadi) -->
                     <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,16">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding EditIdentityCommand}"/>
+                        </Grid.GestureRecognizers>
                         <!-- Avatar doira -->
                         <Border Grid.Column="0"
                                 WidthRequest="56" HeightRequest="56"
@@ -103,10 +109,10 @@
                                        VerticalOptions="Center"/>
                             </Border>
                             <VerticalStackLayout Grid.Column="1" Spacing="1">
-                                <Label Text="{Binding CurrentUser.ProtectionOrderNumber, StringFormat='Himoya orderi № {0}'}"
+                                <Label Text="{Binding CurrentUser.ProtectionOrderNumber, StringFormat='Himoya orderi № {0}', TargetNullValue='Himoya orderi kiritilmagan', FallbackValue='Himoya orderi kiritilmagan'}"
                                        FontSize="12" FontAttributes="Bold"
                                        TextColor="White"/>
-                                <Label Text="Faol · 14-dek 2025-yilgacha"
+                                <Label Text="{Binding CurrentUser.ProtectionOrderExpiry, StringFormat='Amal qiladi · {0:dd-MMM yyyy}-gacha', TargetNullValue='Bosib kiriting', FallbackValue='Bosib kiriting'}"
                                        FontSize="11" TextColor="#99FFFFFF"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2"
@@ -197,6 +203,11 @@
                             <DataTemplate x:DataType="models:TrustedContact">
                                 <Grid ColumnDefinitions="Auto,*,Auto"
                                       Padding="16,12">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenContactCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Grid.GestureRecognizers>
                                     <!-- Avatar -->
                                     <Border Grid.Column="0"
                                             WidthRequest="36" HeightRequest="36"
@@ -229,6 +240,27 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
+                    <!-- Kontakt qo'shish -->
+                    <BoxView Color="{StaticResource Line}" HeightRequest="1"/>
+                    <Grid ColumnDefinitions="Auto,*" Padding="16,14">
+                        <Border Grid.Column="0"
+                                WidthRequest="36" HeightRequest="36"
+                                BackgroundColor="{StaticResource CardAlt}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Margin="0,0,12,0">
+                            <Label Text="＋" FontSize="18" FontAttributes="Bold"
+                                   TextColor="{StaticResource Navy2}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <Label Grid.Column="1" Text="Kontakt qo'shish"
+                               FontSize="14.5" FontAttributes="Bold"
+                               TextColor="{StaticResource Navy2}"
+                               VerticalOptions="Center"/>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AddContactCommand}"/>
+                        </Grid.GestureRecognizers>
+                    </Grid>
                 </VerticalStackLayout>
             </Border>
 
@@ -247,6 +279,9 @@
 
                     <!-- Tibbiy ma'lumotlar -->
                     <Grid ColumnDefinitions="Auto,*,Auto" Padding="18,14">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding EditMedicalCommand}"/>
+                        </Grid.GestureRecognizers>
                         <Border Grid.Column="0"
                                 WidthRequest="36" HeightRequest="36"
                                 BackgroundColor="{StaticResource CardAlt}"
@@ -273,6 +308,9 @@
 
                     <!-- Ogohlantirish ovozi -->
                     <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="18,14">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleAlertSoundCommand}"/>
+                        </Grid.GestureRecognizers>
                         <Border Grid.Column="0"
                                 WidthRequest="36" HeightRequest="36"
                                 BackgroundColor="{StaticResource CardAlt}"
@@ -289,7 +327,7 @@
                                TextColor="{StaticResource Ink}"
                                VerticalOptions="Center"/>
                         <Label Grid.Column="2"
-                               Text="O'chiq"
+                               Text="{Binding AlertSoundText}"
                                FontSize="13.5" TextColor="{StaticResource Muted}"
                                VerticalOptions="Center"
                                Margin="0,0,8,0"/>
@@ -301,6 +339,9 @@
 
                     <!-- Til -->
                     <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="18,14">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangeLanguageCommand}"/>
+                        </Grid.GestureRecognizers>
                         <Border Grid.Column="0"
                                 WidthRequest="36" HeightRequest="36"
                                 BackgroundColor="{StaticResource CardAlt}"
@@ -317,7 +358,7 @@
                                TextColor="{StaticResource Ink}"
                                VerticalOptions="Center"/>
                         <Label Grid.Column="2"
-                               Text="O'zbek"
+                               Text="{Binding Language}"
                                FontSize="13.5" TextColor="{StaticResource Muted}"
                                VerticalOptions="Center"
                                Margin="0,0,8,0"/>
@@ -329,6 +370,9 @@
 
                     <!-- Hujjatlar -->
                     <Grid ColumnDefinitions="Auto,*,Auto" Padding="18,14">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenDocumentsCommand}"/>
+                        </Grid.GestureRecognizers>
                         <Border Grid.Column="0"
                                 WidthRequest="36" HeightRequest="36"
                                 BackgroundColor="{StaticResource CardAlt}"

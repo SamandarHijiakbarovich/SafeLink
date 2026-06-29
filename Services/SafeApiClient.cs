@@ -7,7 +7,10 @@ namespace SafeLink.Services;
 public class SafeApiClient
 {
     private readonly HttpClient _http;
-    private const string BaseUrl = "http://10.0.2.2:5000"; // Android emulator → localhost
+    // Haqiqiy telefon (USB): `adb reverse tcp:5000 tcp:5000` ishga tushiring —
+    // telefonning 127.0.0.1:5000 si kompyuterdagi backendga yo'naltiriladi.
+    // Emulator uchun esa: "http://10.0.2.2:5000"
+    private const string BaseUrl = "http://127.0.0.1:5000";
 
     public SafeApiClient()
     {
@@ -37,6 +40,18 @@ public class SafeApiClient
     public async Task<bool> PatchAsync(string url)
     {
         var res = await _http.PatchAsync(url, null);
+        return res.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> PutAsync(string url, object body)
+    {
+        var res = await _http.PutAsJsonAsync(url, body);
+        return res.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteAsync(string url)
+    {
+        var res = await _http.DeleteAsync(url);
         return res.IsSuccessStatusCode;
     }
 }

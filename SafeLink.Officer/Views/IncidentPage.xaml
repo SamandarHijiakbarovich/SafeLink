@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.Officer.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    x:Class="SafeLink.Officer.Views.IncidentPage"
+    x:DataType="vm:IncidentViewModel"
+    ios:Page.UseSafeArea="True"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="{StaticResource Navy}" StrokeThickness="0" Padding="16,48,16,14">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Border Grid.Column="0" WidthRequest="38" HeightRequest="38"
+                        BackgroundColor="#14FFFFFF" StrokeThickness="1" Stroke="#26FFFFFF"
+                        StrokeShape="RoundRectangle 11" VerticalOptions="Center">
+                    <Label Text="‹" FontSize="22" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                    <Label Text="{Binding Incident.IdLabel}" FontSize="15" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="{Binding Incident.FormattedTime, StringFormat='Qabul qilingan: {0}'}"
+                           FontSize="11" TextColor="#A6FFFFFF"/>
+                </VerticalStackLayout>
+                <Border Grid.Column="2" BackgroundColor="{Binding Incident.TagBg}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,5" VerticalOptions="Center">
+                    <Label Text="{Binding Incident.Tag}" FontSize="11" FontAttributes="Bold"
+                           TextColor="{Binding Incident.TagColor}"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Body -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
+
+                <!-- Xarita -->
+                <Border HeightRequest="200" StrokeThickness="1" Stroke="{StaticResource Line}"
+                        StrokeShape="RoundRectangle 18" BackgroundColor="#DCE5EE">
+                    <Grid>
+                        <WebView Source="{Binding MapUrl}" IsVisible="{Binding HasMap}"
+                                 HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                        <Label Text="📍" FontSize="30" HorizontalOptions="Center" VerticalOptions="Center"
+                               IsVisible="{Binding HasMap, Converter={StaticResource InvertBool}}"/>
+                    </Grid>
+                </Border>
+
+                <!-- Fuqaro -->
+                <Border BackgroundColor="{StaticResource Card}" StrokeThickness="1" Stroke="{StaticResource Line}"
+                        StrokeShape="RoundRectangle 16" Padding="16">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Border Grid.Column="0" WidthRequest="48" HeightRequest="48"
+                                BackgroundColor="{StaticResource Navy}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 24" Margin="0,0,14,0">
+                            <Label Text="{Binding Incident.CitizenInitials}" FontSize="16" FontAttributes="Bold"
+                                   TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="{Binding Incident.CitizenName}" FontSize="16" FontAttributes="Bold"
+                                   TextColor="{StaticResource Ink}"/>
+                            <Label Text="Himoya orderi egasi · IIV tasdiqlagan" FontSize="12"
+                                   TextColor="{StaticResource Green}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Manzil -->
+                <Border BackgroundColor="{StaticResource Card}" StrokeThickness="1" Stroke="{StaticResource Line}"
+                        StrokeShape="RoundRectangle 16" Padding="16">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="MANZIL" FontSize="11" FontAttributes="Bold"
+                               TextColor="{StaticResource Muted}" CharacterSpacing="1.2"/>
+                        <Label Text="{Binding Incident.Address}" FontSize="15" FontAttributes="Bold"
+                               TextColor="{StaticResource Ink}"/>
+                        <Label Text="±4 m aniqlik · GPS jonli kuzatuv" FontSize="12" TextColor="{StaticResource Muted}"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Audio -->
+                <Border BackgroundColor="{StaticResource Card}" StrokeThickness="1" Stroke="{StaticResource Line}"
+                        StrokeShape="RoundRectangle 16" Padding="16">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Label Grid.Column="0" Text="🎙" FontSize="22" VerticalOptions="Center" Margin="0,0,12,0"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Audio yozuv" FontSize="14.5" FontAttributes="Bold" TextColor="{StaticResource Ink}"/>
+                            <Label Text="Hodisa joyidan jonli uzatma" FontSize="12" TextColor="{StaticResource Muted}"/>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" BackgroundColor="{StaticResource RedSoft}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8" Padding="9,5" VerticalOptions="Center">
+                            <Label Text="● JONLI" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource Red}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Action bar -->
+        <Border Grid.Row="2" BackgroundColor="{StaticResource Card}" StrokeThickness="0" Padding="16,14,16,28">
+            <VerticalStackLayout Spacing="8">
+                <Button Text="{Binding PrimaryActionText}"
+                        Command="{Binding AdvanceCommand}"
+                        IsVisible="{Binding CanAct}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        BackgroundColor="{StaticResource Navy}" TextColor="White"
+                        FontAttributes="Bold" FontSize="15" HeightRequest="54" CornerRadius="14"/>
+                <Button Text="Yolg'on signal deb belgilash"
+                        Command="{Binding MarkFalseCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Muted}"
+                        FontSize="13.5" FontAttributes="Bold" HeightRequest="44" BorderWidth="0"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

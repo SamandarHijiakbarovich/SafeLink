@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using SafeLink.Services;
 using SafeLink.Services.Interfaces;
 using SafeLink.ViewModels;
@@ -46,6 +47,8 @@ public static class MauiProgram
         // ─── Xizmatlar (Services) ───────────────────────────────
         builder.Services.AddSingleton<SafeApiClient>();
         builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton(AudioManager.Current);
+        builder.Services.AddSingleton<AudioRecordingService>();
         builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
         builder.Services.AddSingleton<IEmergencyService, EmergencyService>();
         builder.Services.AddSingleton<IBluetoothService, BluetoothService>();

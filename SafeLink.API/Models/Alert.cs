@@ -10,6 +10,11 @@ public class Alert
     public double Longitude { get; set; }
     public string? Address { get; set; }
     public AlertStatus Status { get; set; } = AlertStatus.Active;
+
+    // Dispatch (IIV) holati: New / EnRoute / OnScene / Closed / False
+    public string DispatchStatus { get; set; } = "New";
+    public string? AssignedOfficer { get; set; }
+
     public int? PoliceEtaMinutes { get; set; }
     public string? AudioFilePath { get; set; }
     public DateTime SentAt { get; set; } = DateTime.UtcNow;

@@ -207,7 +207,7 @@
 
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PairingViewModel}}, Path=ConnectCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ConnectCommand}"
                                         CommandParameter="{Binding .}"/>
                                 </Border.GestureRecognizers>
                             </Border>

@@ -28,7 +28,8 @@ public static class ProfileEndpoints
             if (user is null) return Results.NotFound();
 
             user.FullName = req.FullName;
-            user.NationalId = req.NationalId;
+            // Bo'sh JShShIR'ni NULL sifatida saqlaymiz — unique indeks bo'sh qiymatlarda to'qnashmasligi uchun
+            user.NationalId = string.IsNullOrWhiteSpace(req.NationalId) ? null : req.NationalId;
             user.ProtectionOrderNumber = req.ProtectionOrderNumber;
             user.ProtectionOrderExpiry = req.ProtectionOrderExpiry;
             user.BloodType = req.BloodType;

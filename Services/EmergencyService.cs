@@ -3,7 +3,7 @@ using SafeLink.Services.Interfaces;
 
 namespace SafeLink.Services;
 
-public class EmergencyService(IGeolocationService geo, SafeApiClient api) : IEmergencyService
+public class EmergencyService(IGeolocationService geo, SafeApiClient api, AudioRecordingService audio) : IEmergencyService
 {
     public async Task<AlertEvent> SendAlertAsync(IProgress<double> progress, CancellationToken cancellationToken)
     {
@@ -13,6 +13,9 @@ public class EmergencyService(IGeolocationService geo, SafeApiClient api) : IEme
             Status = AlertStatus.Active,
             PoliceEtaMinutes = 4
         };
+
+        // 0. Audio yozishni boshlash (signal davomida atrof ovozi yozib boriladi)
+        await audio.StartAsync();
 
         // 1. GPS (0% → 40%)
         try
@@ -53,8 +56,8 @@ public class EmergencyService(IGeolocationService geo, SafeApiClient api) : IEme
     public async Task CancelAlertAsync(AlertEvent alert)
     {
         alert.Status = AlertStatus.FalseAlarm;
-        // Server da ham bekor qilish (alertId bo'lsa)
-        await Task.CompletedTask;
+        // Audio yozuvni to'xtatib, faylni saqlaymiz
+        alert.AudioFilePath = await audio.StopAsync();
     }
 
     public async Task CallOperatorAsync()

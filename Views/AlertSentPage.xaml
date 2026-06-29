@@ -32,6 +32,10 @@
     Shell.NavBarIsVisible="False"
     BackgroundColor="{StaticResource BgMain}">
 
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
     <ScrollView>
         <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
@@ -85,12 +89,18 @@
                     StrokeShape="RoundRectangle 20"
                     BackgroundColor="#DCE5EE">
 
-                <!-- Faux xarita fon -->
+                <!-- Xarita (OpenStreetMap) yoki fallback belgisi -->
                 <Grid>
-                    <!-- Joylashuv belgisi -->
+                    <!-- Real xarita -->
+                    <WebView Source="{Binding MapUrl}"
+                             IsVisible="{Binding HasMap}"
+                             HorizontalOptions="Fill" VerticalOptions="Fill"/>
+
+                    <!-- Joylashuv aniqlanmasa — belgi -->
                     <VerticalStackLayout HorizontalOptions="Center"
                                          VerticalOptions="Center"
-                                         Spacing="4">
+                                         Spacing="4"
+                                         IsVisible="{Binding HasMap, Converter={StaticResource InvertBool}}">
                         <Label Text="📍" FontSize="28"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>

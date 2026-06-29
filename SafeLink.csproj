@@ -41,6 +41,21 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<!-- Backend (SafeLink.API) shu papka ichida joylashgan — MAUI build uni
+	     o'z manba fayllariga qo'shib yubormasligi uchun butunlay chiqaramiz. -->
+	<ItemGroup>
+		<Compile Remove="SafeLink.API\**" />
+		<MauiXaml Remove="SafeLink.API\**" />
+		<MauiCss Remove="SafeLink.API\**" />
+		<EmbeddedResource Remove="SafeLink.API\**" />
+		<None Remove="SafeLink.API\**" />
+		<Compile Remove="SafeLink.Officer\**" />
+		<MauiXaml Remove="SafeLink.Officer\**" />
+		<MauiCss Remove="SafeLink.Officer\**" />
+		<EmbeddedResource Remove="SafeLink.Officer\**" />
+		<None Remove="SafeLink.Officer\**" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<!-- Navy fon, qizil SOS ikonka -->
@@ -63,6 +78,7 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Plugin.Maui.Audio" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 	</ItemGroup>

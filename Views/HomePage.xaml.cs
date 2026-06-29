@@ -11,17 +11,20 @@ namespace SafeLink.Views;
 public partial class HomePage : ContentPage
 {
     private bool _animationRunning;
+    private readonly HomeViewModel _vm;
 
     public HomePage(HomeViewModel vm)
     {
         InitializeComponent();
         BindingContext = vm;
+        _vm = vm;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         StartPulseAnimation();
+        await _vm.LoadAsync();
     }
 
     protected override void OnDisappearing()

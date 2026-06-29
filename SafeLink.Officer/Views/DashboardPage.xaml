@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.Officer.ViewModels"
+    xmlns:models="clr-namespace:SafeLink.Officer.Models"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    x:Class="SafeLink.Officer.Views.DashboardPage"
+    x:DataType="vm:DashboardViewModel"
+    ios:Page.UseSafeArea="True"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ─── TOP BAR (navy) ─── -->
+        <Border Grid.Row="0" BackgroundColor="{StaticResource Navy}"
+                StrokeThickness="0" Padding="16,48,16,14">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <!-- Brand -->
+                <Border Grid.Column="0" WidthRequest="40" HeightRequest="40"
+                        BackgroundColor="#14FFFFFF" StrokeThickness="1" Stroke="#26FFFFFF"
+                        StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                    <Label Text="🛡" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                    <HorizontalStackLayout>
+                        <Label Text="SafeLink" FontSize="15" FontAttributes="Bold" TextColor="White"/>
+                        <Label Text=" · Dispatch" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Gold}"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6">
+                        <Ellipse WidthRequest="7" HeightRequest="7" Fill="{StaticResource Green}" VerticalOptions="Center"/>
+                        <Label Text="Onlayn · 14 xodim faol" FontSize="10.5" TextColor="#A6FFFFFF"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Officer avatar (bosilsa chiqish) -->
+                <Border Grid.Column="2" WidthRequest="40" HeightRequest="40"
+                        BackgroundColor="#475569" StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                        VerticalOptions="Center">
+                    <Label Text="{Binding OfficerInitials}" FontSize="14" FontAttributes="Bold"
+                           TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ─── BODY ─── -->
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding RefreshCommand}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16,16,16,32" Spacing="16">
+
+                    <!-- Statistika -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                          ColumnSpacing="10" RowSpacing="10">
+                        <Border Grid.Row="0" Grid.Column="0" BackgroundColor="{StaticResource Card}"
+                                StrokeThickness="1" Stroke="{StaticResource Line}" StrokeShape="RoundRectangle 14" Padding="14,12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding TodayCalls}" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Navy}"/>
+                                <Label Text="Bugungi chaqiriqlar" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="1" BackgroundColor="{StaticResource Card}"
+                                StrokeThickness="1" Stroke="{StaticResource Line}" StrokeShape="RoundRectangle 14" Padding="14,12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding AvgResponse}" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Green}"/>
+                                <Label Text="O'rt. javob vaqti" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="0" BackgroundColor="{StaticResource Card}"
+                                StrokeThickness="1" Stroke="{StaticResource Line}" StrokeShape="RoundRectangle 14" Padding="14,12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding ActivePatrols}" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Blue}"/>
+                                <Label Text="Faol patrullar" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="1" BackgroundColor="{StaticResource Card}"
+                                StrokeThickness="1" Stroke="{StaticResource Line}" StrokeShape="RoundRectangle 14" Padding="14,12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding Completed}" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Muted}"/>
+                                <Label Text="Yakunlangan" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label Text="HODISALAR" FontSize="11" FontAttributes="Bold"
+                           TextColor="{StaticResource Muted}" CharacterSpacing="1.4" Margin="2,4,0,0"/>
+
+                    <!-- Hodisalar ro'yxati -->
+                    <CollectionView ItemsSource="{Binding Incidents}" SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Incident">
+                                <Border BackgroundColor="{StaticResource Card}"
+                                        StrokeThickness="1" Stroke="{StaticResource Line}"
+                                        StrokeShape="RoundRectangle 16" Padding="14">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenIncidentCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="8">
+                                        <!-- Yuqori qator: tag + vaqt -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Border Grid.Column="0" BackgroundColor="{Binding TagBg}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                                    Padding="9,4" HorizontalOptions="Start">
+                                                <Label Text="{Binding Tag}" FontSize="10.5" FontAttributes="Bold"
+                                                       TextColor="{Binding TagColor}"/>
+                                            </Border>
+                                            <Label Grid.Column="2" Text="{Binding FormattedTime}"
+                                                   FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Muted}"/>
+                                        </Grid>
+
+                                        <!-- Fuqaro -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Border Grid.Column="0" WidthRequest="38" HeightRequest="38"
+                                                    BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 19" Margin="0,0,12,0">
+                                                <Label Text="{Binding CitizenInitials}" FontSize="13" FontAttributes="Bold"
+                                                       TextColor="{StaticResource Navy}"
+                                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                <Label Text="{Binding CitizenName}" FontSize="14.5" FontAttributes="Bold"
+                                                       TextColor="{StaticResource Ink}"/>
+                                                <Label Text="{Binding Address}" FontSize="12" TextColor="{StaticResource Muted}"
+                                                       LineBreakMode="TailTruncation"/>
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="2" Text="›" FontSize="20"
+                                                   TextColor="{StaticResource Faint}" VerticalOptions="Center"/>
+                                        </Grid>
+
+                                        <!-- Pastki qator: ID + masofa/eta -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0" Text="{Binding IdLabel}" FontSize="11"
+                                                   TextColor="{StaticResource Faint}"/>
+                                            <Label Grid.Column="1" Text="{Binding Eta, StringFormat='⏱ {0}'}"
+                                                   FontSize="11" FontAttributes="Bold" TextColor="{StaticResource Ink2}"/>
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="40" Spacing="8" VerticalOptions="Center">
+                                <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
+                                <Label Text="Hozircha hodisalar yo'q" FontSize="14"
+                                       TextColor="{StaticResource Muted}" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

@@ -60,8 +60,27 @@ public partial class HistoryViewModel(SafeApiClient api) : ObservableObject
     [RelayCommand]
     async Task OpenDetail(AlertEvent alert)
     {
-        // TODO: detail sahifaga o'tish
-        await Task.CompletedTask;
+        var page = Shell.Current?.CurrentPage;
+        if (page is null || alert is null) return;
+
+        var eta = alert.PoliceEtaMinutes is { } e ? $"{e} daqiqa" : "—";
+        var info =
+            $"📅 Sana: {alert.FormattedTime}\n" +
+            $"📍 Manzil: {alert.Address}\n" +
+            $"🔖 Holat: {alert.StatusLabel}\n" +
+            $"🚓 Politsiya: {eta}";
+
+        if (alert.Status == AlertStatus.Active)
+        {
+            bool cancel = await page.DisplayAlert("SOS signal",
+                info + "\n\nBu signalni yolg'on deb belgilaysizmi?", "Yolg'on signal", "Yopish");
+            if (cancel && await api.PatchAsync($"/alerts/cancel/{alert.Id}"))
+                await LoadHistory();
+        }
+        else
+        {
+            await page.DisplayAlert("SOS signal tafsiloti", info, "Yopish");
+        }
     }
 
     void LoadDemoData()

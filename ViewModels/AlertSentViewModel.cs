@@ -41,7 +41,23 @@ public partial class AlertSentViewModel : BaseViewModel
         SentTime = value.FormattedTime;
         Address = value.Address ?? "Manzil aniqlanmoqda...";
         PoliceEta = $"~{value.PoliceEtaMinutes} daqiqa";
+
+        // OpenStreetMap (API kalit kerak emas) — joylashuvni markerda ko'rsatadi
+        if (value.Latitude != 0 || value.Longitude != 0)
+        {
+            var ci = System.Globalization.CultureInfo.InvariantCulture;
+            const double d = 0.004;
+            string lat = value.Latitude.ToString(ci), lon = value.Longitude.ToString(ci);
+            string bbox = $"{(value.Longitude - d).ToString(ci)},{(value.Latitude - d).ToString(ci)}," +
+                          $"{(value.Longitude + d).ToString(ci)},{(value.Latitude + d).ToString(ci)}";
+            MapUrl = $"https://www.openstreetmap.org/export/embed.html?bbox={bbox}&layer=mapnik&marker={lat},{lon}";
+            HasMap = true;
+        }
     }
+
+    // ─── Xarita ───────────────────────────────────────────────
+    [ObservableProperty] string mapUrl = "";
+    [ObservableProperty] bool hasMap;
 
     // ─── Ko'rsatiladigan ma'lumotlar ──────────────────────────
     [ObservableProperty]

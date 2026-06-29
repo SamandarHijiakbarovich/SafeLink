@@ -3,104 +3,136 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:SafeLink.ViewModels.Onboarding"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SafeLink.Views.Onboarding.WelcomePage"
     x:DataType="vm:WelcomeViewModel"
+    ios:Page.UseSafeArea="True"
     Shell.NavBarIsVisible="False"
     BackgroundColor="{StaticResource Navy}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
 
     <Grid>
         <!-- Radial gradient fon -->
         <BoxView Color="{StaticResource Navy}" HorizontalOptions="Fill" VerticalOptions="Fill"/>
 
         <!-- Himoya halqalari (dekorativ) -->
-        <Grid HorizontalOptions="Center" VerticalOptions="Start" Margin="0,80,0,0">
+        <Grid HorizontalOptions="Center" VerticalOptions="Start" Margin="0,80,0,0" InputTransparent="True">
             <Ellipse WidthRequest="300" HeightRequest="300" Stroke="#10FFFFFF" StrokeThickness="1"/>
             <Ellipse WidthRequest="240" HeightRequest="240" Stroke="#10FFFFFF" StrokeThickness="1"/>
             <Ellipse WidthRequest="180" HeightRequest="180" Stroke="#10FFFFFF" StrokeThickness="1"/>
             <Ellipse WidthRequest="120" HeightRequest="120" Stroke="#10FFFFFF" StrokeThickness="1"/>
         </Grid>
 
-        <VerticalStackLayout Padding="24,0" Spacing="0">
+        <!-- Asosiy tuzilma: markaziy kontent (scroll) + pastга mahkamlangan CTA -->
+        <Grid RowDefinitions="*,Auto" Padding="24,24,24,24">
 
-            <!-- Shield logo -->
-            <Border WidthRequest="96" HeightRequest="96"
-                    BackgroundColor="#0FFFFFFF"
-                    StrokeThickness="1" Stroke="#1AFFFFFF"
-                    StrokeShape="RoundRectangle 28"
-                    HorizontalOptions="Center"
-                    Margin="0,180,0,0">
-                <Label Text="🛡" FontSize="52"
-                       HorizontalOptions="Center" VerticalOptions="Center"/>
-            </Border>
+            <!-- Markaziy kontent — ekranga sig'masa scroll bo'ladi -->
+            <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Spacing="0" VerticalOptions="Center">
 
-            <!-- Brand -->
-            <Label Text="SafeLink"
-                   FontSize="34" FontAttributes="Bold"
-                   TextColor="White" CharacterSpacing="-0.6"
-                   HorizontalOptions="Center"
-                   Margin="0,24,0,0"/>
-            <Label Text="HIMOYA YONINGIZDA"
-                   FontSize="12" FontAttributes="Bold"
-                   TextColor="#8CFFFFFF" CharacterSpacing="2"
-                   HorizontalOptions="Center"
-                   Margin="0,8,0,0"/>
+                    <!-- Shield logo -->
+                    <Border WidthRequest="96" HeightRequest="96"
+                            BackgroundColor="#0FFFFFFF"
+                            StrokeThickness="1" Stroke="#1AFFFFFF"
+                            StrokeShape="RoundRectangle 28"
+                            HorizontalOptions="Center"
+                            Margin="0,24,0,0">
+                        <Label Text="🛡" FontSize="52"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
 
-            <!-- Tavsif -->
-            <Label Text="Himoya orderi egalari uchun davlat tasdiqlagan favqulodda chaqiriq tizimi. Bir tugma — bir soniyada politsiya yetib keladi."
-                   FontSize="15" TextColor="#BFFFFFFF"
-                   HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                   LineHeight="1.5"
-                   Margin="0,24,0,0"/>
+                    <!-- Brand -->
+                    <Label Text="SafeLink"
+                           FontSize="34" FontAttributes="Bold"
+                           TextColor="White" CharacterSpacing="-0.6"
+                           HorizontalOptions="Center"
+                           Margin="0,24,0,0"/>
+                    <Label Text="HIMOYA YONINGIZDA"
+                           FontSize="12" FontAttributes="Bold"
+                           TextColor="#8CFFFFFF" CharacterSpacing="2"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
 
-            <!-- Trust badges -->
-            <Grid ColumnDefinitions="*,*,*" Margin="0,32,0,0" ColumnSpacing="8">
-                <Border Grid.Column="0" BackgroundColor="#08FFFFFF"
-                        StrokeThickness="1" Stroke="#14FFFFFF"
-                        StrokeShape="RoundRectangle 14" Padding="8,10">
-                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                        <Label Text="🛡" FontSize="18" HorizontalOptions="Center"/>
-                        <Label Text="IIV tasdiqlagan" FontSize="10.5" FontAttributes="Bold"
-                               TextColor="#A5FFFFFF" HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-                <Border Grid.Column="1" BackgroundColor="#08FFFFFF"
-                        StrokeThickness="1" Stroke="#14FFFFFF"
-                        StrokeShape="RoundRectangle 14" Padding="8,10">
-                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                        <Label Text="📍" FontSize="18" HorizontalOptions="Center"/>
-                        <Label Text="GPS aniqlik" FontSize="10.5" FontAttributes="Bold"
-                               TextColor="#A5FFFFFF" HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-                <Border Grid.Column="2" BackgroundColor="#08FFFFFF"
-                        StrokeThickness="1" Stroke="#14FFFFFF"
-                        StrokeShape="RoundRectangle 14" Padding="8,10">
-                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                        <Label Text="📡" FontSize="18" HorizontalOptions="Center"/>
-                        <Label Text="Brelok ulanadi" FontSize="10.5" FontAttributes="Bold"
-                               TextColor="#A5FFFFFF" HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-            </Grid>
+                    <!-- Tavsif -->
+                    <Label Text="Himoya orderi egalari uchun davlat tasdiqlagan favqulodda chaqiriq tizimi. Bir tugma — bir soniyada politsiya yetib keladi."
+                           FontSize="15" TextColor="#BFFFFFFF"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                           LineHeight="1.5"
+                           Margin="0,24,0,0"/>
 
-            <!-- CTA tugmalar -->
-            <Button Text="Ro'yxatdan o'tish"
-                    Command="{Binding RegisterCommand}"
-                    BackgroundColor="White" TextColor="{StaticResource Navy}"
-                    FontAttributes="Bold" FontSize="15"
-                    HeightRequest="56" CornerRadius="16"
-                    Margin="0,40,0,0"/>
+                    <!-- Trust badges -->
+                    <Grid ColumnDefinitions="*,*,*" Margin="0,32,0,0" ColumnSpacing="8">
+                        <Border Grid.Column="0" BackgroundColor="#08FFFFFF"
+                                StrokeThickness="1" Stroke="#14FFFFFF"
+                                StrokeShape="RoundRectangle 14" Padding="8,10">
+                            <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                                <Label Text="🛡" FontSize="18" HorizontalOptions="Center"/>
+                                <Label Text="IIV tasdiqlagan" FontSize="10.5" FontAttributes="Bold"
+                                       TextColor="#A5FFFFFF" HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" BackgroundColor="#08FFFFFF"
+                                StrokeThickness="1" Stroke="#14FFFFFF"
+                                StrokeShape="RoundRectangle 14" Padding="8,10">
+                            <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                                <Label Text="📍" FontSize="18" HorizontalOptions="Center"/>
+                                <Label Text="GPS aniqlik" FontSize="10.5" FontAttributes="Bold"
+                                       TextColor="#A5FFFFFF" HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="2" BackgroundColor="#08FFFFFF"
+                                StrokeThickness="1" Stroke="#14FFFFFF"
+                                StrokeShape="RoundRectangle 14" Padding="8,10">
+                            <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                                <Label Text="📡" FontSize="18" HorizontalOptions="Center"/>
+                                <Label Text="Brelok ulanadi" FontSize="10.5" FontAttributes="Bold"
+                                       TextColor="#A5FFFFFF" HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
 
-            <Button Text="Hisobim bor — kirish"
-                    Command="{Binding LoginCommand}"
-                    BackgroundColor="Transparent" TextColor="#D9FFFFFF"
-                    FontSize="14" FontAttributes="Bold"
-                    HeightRequest="48" BorderWidth="0"
-                    Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </ScrollView>
 
-        </VerticalStackLayout>
+            <!-- Pastга mahkamlangan CTA tugmalar -->
+            <VerticalStackLayout Grid.Row="1" Spacing="8" Margin="0,16,0,0">
+                <Button Text="Ro'yxatdan o'tish"
+                        Command="{Binding RegisterCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        BackgroundColor="White" TextColor="{StaticResource Navy}"
+                        FontAttributes="Bold" FontSize="15"
+                        HeightRequest="56" CornerRadius="16"/>
+
+                <!-- OneID (davlat tizimi) orqali kirish -->
+                <Button Text="🆔  OneID orqali kirish"
+                        Command="{Binding OneIdLoginCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        BackgroundColor="#102A52" TextColor="White"
+                        BorderColor="#2F5C9E" BorderWidth="1"
+                        FontAttributes="Bold" FontSize="15"
+                        HeightRequest="56" CornerRadius="16"/>
+
+                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                                   Color="White" HeightRequest="22" Margin="0,2,0,0"/>
+                <Label Text="{Binding ErrorText}" IsVisible="{Binding HasError}"
+                       TextColor="#FCA5A5" FontSize="13"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+
+                <Button Text="Hisobim bor — kirish"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                        BackgroundColor="Transparent" TextColor="#D9FFFFFF"
+                        FontSize="14" FontAttributes="Bold"
+                        HeightRequest="48" BorderWidth="0"/>
+            </VerticalStackLayout>
+
+        </Grid>
     </Grid>
 </ContentPage>
