@@ -10,23 +10,6 @@ using SafeLink.Views.Onboarding;
 
 namespace SafeLink;
 
-/// <summary>
-/// Ilovaning kirish nuqtasi — barcha xizmatlar va sahifalar shu yerda ro'yxatdan o'tadi.
-///
-/// Dependency Injection (DI) nima?
-/// ─────────────────────────────────
-/// Har bir sinf o'z kerakli ob'ektlarini o'zi yasab olmaydi.
-/// Buning o'rniga, MauiProgram barcha kerakli narsalarni yaratib,
-/// konstruktorda uzatadi.
-///
-/// Misol:
-///   HomeViewModel → IEmergencyService kerak
-///   IEmergencyService → IGeolocationService kerak
-///   DI bularni avtomatik yaratib beradi.
-///
-/// AddSingleton → bir marta yaratiladi, doim shu nusxa ishlatiladi
-/// AddTransient → har safar yangi nusxa yaratiladi
-/// </summary>
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
@@ -35,8 +18,6 @@ public static class MauiProgram
 
         builder
             .UseMauiApp<App>()
-            // CommunityToolkit.Maui ni faollashtirish
-            // (BoolToObjectConverter va boshqa helper lar uchun)
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
@@ -44,7 +25,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // ─── Xizmatlar (Services) ───────────────────────────────
+        // Services
         builder.Services.AddSingleton<SafeApiClient>();
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton(AudioManager.Current);
@@ -52,8 +33,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
         builder.Services.AddSingleton<IEmergencyService, EmergencyService>();
         builder.Services.AddSingleton<IBluetoothService, BluetoothService>();
+        builder.Services.AddSingleton<SignalRService>();
 
-        // ─── ViewModels ─────────────────────────────────────────
+        // ViewModels
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<SosHoldViewModel>();
         builder.Services.AddTransient<AlertSentViewModel>();
@@ -69,7 +51,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ContactsViewModel>();
         builder.Services.AddTransient<CompleteViewModel>();
 
-        // ─── Views (Sahifalar) ──────────────────────────────────
+        // Views
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<SosHoldPage>();
         builder.Services.AddTransient<AlertSentPage>();
@@ -85,7 +67,6 @@ public static class MauiProgram
         builder.Services.AddTransient<ContactsPage>();
         builder.Services.AddTransient<CompletePage>();
 
-        // ─── AppShell ───────────────────────────────────────────
         builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG

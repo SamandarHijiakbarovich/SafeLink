@@ -6,7 +6,7 @@ using SafeLink.Officer.Services;
 
 namespace SafeLink.Officer.ViewModels;
 
-public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService auth) : ObservableObject
+public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService auth, SignalRService signalR) : ObservableObject
 {
     [ObservableProperty] string officerName = "";
     [ObservableProperty] string officerUnit = "";
@@ -14,8 +14,9 @@ public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService
     [ObservableProperty] bool isLoading;
     [ObservableProperty] bool isEmpty;
     [ObservableProperty] string clock = "";
+    [ObservableProperty] bool hasNewAlert;
+    [ObservableProperty] string newAlertText = "";
 
-    // Statistika
     [ObservableProperty] string todayCalls = "0";
     [ObservableProperty] string avgResponse = "—";
     [ObservableProperty] string activePatrols = "0";
@@ -29,6 +30,12 @@ public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService
         OfficerUnit = auth.Current.Unit;
         OfficerInitials = auth.Current.Initials;
         Clock = DateTime.Now.ToString("dd.MM.yyyy · HH:mm");
+
+        signalR.NewAlertReceived -= OnNewAlert;
+        signalR.NewAlertReceived += OnNewAlert;
+        signalR.AlertStatusChanged -= OnStatusChanged;
+        signalR.AlertStatusChanged += OnStatusChanged;
+        _ = ConnectSignalR();
 
         IsLoading = true;
         try
@@ -47,12 +54,50 @@ public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService
             foreach (var i in items ?? [])
                 Incidents.Add(i);
         }
-        catch { /* tarmoq xatosi — bo'sh holat */ }
+        catch { }
         finally
         {
             IsLoading = false;
             IsEmpty = Incidents.Count == 0;
         }
+    }
+
+    async Task ConnectSignalR()
+    {
+        try { await signalR.ConnectAsync(auth.Current.Token); }
+        catch { }
+    }
+
+    void OnNewAlert(NewAlertPayload p)
+    {
+        var incident = new Incident
+        {
+            Id = p.Id, CitizenName = p.CitizenName, Address = p.Address,
+            Latitude = p.Latitude, Longitude = p.Longitude,
+            DispatchStatus = "New", SentAt = p.SentAt, PoliceEtaMinutes = p.PoliceEtaMinutes,
+        };
+        Incidents.Insert(0, incident);
+        IsEmpty = false;
+        if (int.TryParse(TodayCalls, out var n)) TodayCalls = (n + 1).ToString();
+        NewAlertText = $"🚨 Yangi SOS — {p.CitizenName}";
+        HasNewAlert = true;
+        _ = HideBannerAfterDelay();
+    }
+
+    void OnStatusChanged(StatusChangedPayload p)
+    {
+        var inc = Incidents.FirstOrDefault(i => i.Id == p.Id);
+        if (inc is null) return;
+        inc.DispatchStatus = p.DispatchStatus;
+        inc.AssignedOfficer = p.AssignedOfficer;
+        var idx = Incidents.IndexOf(inc);
+        Incidents[idx] = inc;
+    }
+
+    async Task HideBannerAfterDelay()
+    {
+        await Task.Delay(5000);
+        HasNewAlert = false;
     }
 
     [RelayCommand]
@@ -72,6 +117,7 @@ public partial class DashboardViewModel(OfficerApiClient api, OfficerAuthService
         var page = Shell.Current?.CurrentPage;
         bool ok = page is not null && await page.DisplayAlert("Chiqish", "Tizimdan chiqasizmi?", "Ha", "Yo'q");
         if (!ok) return;
+        await signalR.DisconnectAsync();
         auth.Logout();
         await Shell.Current!.GoToAsync("//login");
     }

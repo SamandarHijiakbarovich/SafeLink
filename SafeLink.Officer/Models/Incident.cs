@@ -68,6 +68,7 @@ public class OfficerInfo
     public string ServiceId { get; set; } = "";
     public string Name { get; set; } = "";
     public string Unit { get; set; } = "";
+    public string Token { get; set; } = "";
     public string Initials
     {
         get

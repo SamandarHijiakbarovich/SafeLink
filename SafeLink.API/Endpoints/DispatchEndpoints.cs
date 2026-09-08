@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SafeLink.API.Data;
+using SafeLink.API.Hubs;
 using SafeLink.API.Models;
 using SafeLink.API.Services;
 
@@ -7,7 +9,6 @@ namespace SafeLink.API.Endpoints;
 
 /// <summary>
 /// IIV xodimi (Dispatch) endpointlari — favqulodda chaqiriqlarni qabul qilish va boshqarish.
-/// HOZIR: login mock (Xizmat ID + parol istalgan qiymat). Keyin real xodim bazasiga ulanadi.
 /// </summary>
 public static class DispatchEndpoints
 {
@@ -15,13 +16,12 @@ public static class DispatchEndpoints
     {
         var g = app.MapGroup("/dispatch").WithTags("Dispatch");
 
-        // 1. Xodim login (mock — istalgan ID/parol qabul qilinadi)
+        // 1. Xodim login (mock)
         g.MapPost("/login", (OfficerLoginRequest req, TokenService tokens) =>
         {
             if (string.IsNullOrWhiteSpace(req.ServiceId))
                 return Results.BadRequest(new { error = "Xizmat ID kiriting" });
 
-            // Mock xodim
             var officer = new User { Id = 90000, PhoneNumber = req.ServiceId, FullName = "Serj. J. Sodiqov" };
             return Results.Ok(new
             {
@@ -30,7 +30,7 @@ public static class DispatchEndpoints
             });
         });
 
-        // 2. Hodisalar ro'yxati (barcha chaqiriqlar)
+        // 2. Hodisalar ro'yxati
         g.MapGet("/incidents", async (AppDbContext db) =>
         {
             var items = await db.Alerts
@@ -52,8 +52,8 @@ public static class DispatchEndpoints
             return Results.Ok(items);
         }).RequireAuthorization();
 
-        // 3. Hodisa holatini yangilash (Qabul qilish → Yo'lda → Joyda → Yakunlash)
-        g.MapPatch("/incidents/{id:int}/status", async (int id, UpdateStatusRequest req, AppDbContext db) =>
+        // 3. Hodisa holatini yangilash
+        g.MapPatch("/incidents/{id:int}/status", async (int id, UpdateStatusRequest req, AppDbContext db, IHubContext<AlertHub> hub) =>
         {
             var alert = await db.Alerts.FirstOrDefaultAsync(a => a.Id == id);
             if (alert is null) return Results.NotFound();
@@ -64,10 +64,27 @@ public static class DispatchEndpoints
             if (req.Status is "False") { alert.Status = AlertStatus.FalseAlarm; alert.ResolvedAt = DateTime.UtcNow; }
 
             await db.SaveChangesAsync();
+
+            // Fuqaroga real-time xabar
+            await hub.Clients.Group($"user_{alert.UserId}").SendAsync("StatusUpdate", new
+            {
+                alert.Id,
+                alert.DispatchStatus,
+                alert.AssignedOfficer,
+            });
+
+            // Barcha officer larga yangilangan holat
+            await hub.Clients.Group("officers").SendAsync("AlertStatusChanged", new
+            {
+                alert.Id,
+                alert.DispatchStatus,
+                alert.AssignedOfficer,
+            });
+
             return Results.Ok(new { alert.Id, alert.DispatchStatus });
         }).RequireAuthorization();
 
-        // 4. Statistika (dashboard yuqorisidagi raqamlar)
+        // 4. Statistika
         g.MapGet("/stats", async (AppDbContext db) =>
         {
             var today = DateTime.UtcNow.Date;
@@ -76,8 +93,8 @@ public static class DispatchEndpoints
             return Results.Ok(new
             {
                 todayCalls = todayCount,
-                avgResponse = "4:21",   // mock
-                activePatrols = 14,     // mock
+                avgResponse = "4:21",
+                activePatrols = 14,
                 completed = closed,
             });
         }).RequireAuthorization();

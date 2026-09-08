@@ -17,7 +17,7 @@ public class OfficerAuthService(OfficerApiClient api)
             new { serviceId, password });
         if (res is null) return false;
 
-        Current = new OfficerInfo { ServiceId = res.Officer.ServiceId, Name = res.Officer.Name, Unit = res.Officer.Unit };
+        Current = new OfficerInfo { ServiceId = res.Officer.ServiceId, Name = res.Officer.Name, Unit = res.Officer.Unit, Token = res.Token };
         api.SetToken(res.Token);
         await SecureStorage.SetAsync(TokenKey, res.Token);
         await SecureStorage.SetAsync(NameKey, Current.Name);
@@ -36,6 +36,7 @@ public class OfficerAuthService(OfficerApiClient api)
             ServiceId = await SecureStorage.GetAsync(IdKey) ?? "",
             Name = await SecureStorage.GetAsync(NameKey) ?? "Xodim",
             Unit = await SecureStorage.GetAsync(UnitKey) ?? "",
+            Token = token,
         };
         return true;
     }

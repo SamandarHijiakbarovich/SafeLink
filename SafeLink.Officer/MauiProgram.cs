@@ -23,6 +23,7 @@ public static class MauiProgram
 		// Services
 		builder.Services.AddSingleton<OfficerApiClient>();
 		builder.Services.AddSingleton<OfficerAuthService>();
+		builder.Services.AddSingleton<SignalRService>();
 
 		// ViewModels
 		builder.Services.AddTransient<LoginViewModel>();

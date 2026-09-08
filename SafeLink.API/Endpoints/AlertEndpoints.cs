@@ -1,6 +1,8 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SafeLink.API.Data;
+using SafeLink.API.Hubs;
 using SafeLink.API.Models;
 using SafeLink.API.Services;
 
@@ -13,7 +15,7 @@ public static class AlertEndpoints
         var g = app.MapGroup("/alerts").WithTags("Alerts").RequireAuthorization();
 
         // SOS yuborish
-        g.MapPost("/send", async (SendAlertRequest req, ClaimsPrincipal principal, AppDbContext db, SmsService sms) =>
+        g.MapPost("/send", async (SendAlertRequest req, ClaimsPrincipal principal, AppDbContext db, SmsService sms, IHubContext<AlertHub> hub) =>
         {
             var userId = int.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var user = await db.Users
@@ -37,6 +39,19 @@ public static class AlertEndpoints
             // Ishonchli kontaktlarga SMS yuborish
             foreach (var contact in user.TrustedContacts)
                 await sms.SendEmergencyAlertAsync(contact.PhoneNumber, user.FullName, req.Address ?? "noma'lum");
+
+            // Real-time: barcha officer larga yangi SOS xabari
+            await hub.Clients.Group("officers").SendAsync("NewAlert", new
+            {
+                alert.Id,
+                citizenName = user.FullName,
+                alert.Address,
+                alert.Latitude,
+                alert.Longitude,
+                alert.PoliceEtaMinutes,
+                alert.SentAt,
+                dispatchStatus = "New",
+            });
 
             return Results.Ok(new { alertId = alert.Id, policeEta = alert.PoliceEtaMinutes });
         });

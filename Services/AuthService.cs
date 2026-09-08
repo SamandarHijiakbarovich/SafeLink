@@ -22,14 +22,8 @@ public class AuthService(SafeApiClient api)
         return (true, res.IsNewUser);
     }
 
-    /// <summary>
-    /// OneID (davlat tizimi) orqali kirish.
-    /// Real: OneID web-login → authorization code. Mock: sandbox kod bilan callback.
-    /// </summary>
     public async Task<(bool success, bool isNewUser)> LoginWithOneIdAsync()
     {
-        // Real loyihada: OneID login sahifasi ochiladi (WebAuthenticator),
-        // redirect orqali authorization code olinadi va shu yerga uzatiladi.
         var res = await api.PostAsync<VerifyResponse>("/auth/oneid/callback",
             new { code = "SANDBOX_CODE", state = "app" });
         if (res is null) return (false, false);
@@ -49,6 +43,8 @@ public class AuthService(SafeApiClient api)
     }
 
     public bool IsLoggedIn => SecureStorage.GetAsync(TokenKey).GetAwaiter().GetResult() is not null;
+
+    public Task<string?> GetTokenAsync() => SecureStorage.GetAsync(TokenKey);
 
     public void Logout()
     {
