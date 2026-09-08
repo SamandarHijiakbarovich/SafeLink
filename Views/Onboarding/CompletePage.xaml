@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels.Onboarding"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    x:Class="SafeLink.Views.Onboarding.CompletePage"
+    x:DataType="vm:CompleteViewModel"
+    ios:Page.UseSafeArea="True"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+    <VerticalStackLayout Padding="24,24,24,32" Spacing="0">
+
+        <!-- Progress (to'liq) -->
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,56,0,0">
+            <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+            <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+            <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+            <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+            <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+        </HorizontalStackLayout>
+
+        <!-- Hero: navy fon + yashil check -->
+        <Border BackgroundColor="{StaticResource Navy2}"
+                StrokeThickness="0" StrokeShape="RoundRectangle 24"
+                HeightRequest="240" Margin="0,24,0,0">
+            <Grid>
+                <!-- Halqalar -->
+                <Ellipse WidthRequest="220" HeightRequest="220"
+                         Stroke="#1FFFFFFF" StrokeThickness="1"
+                         HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Ellipse WidthRequest="160" HeightRequest="160"
+                         Stroke="#1FFFFFFF" StrokeThickness="1"
+                         HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Ellipse WidthRequest="100" HeightRequest="100"
+                         Stroke="#1FFFFFFF" StrokeThickness="1"
+                         HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                <!-- Yashil check doira -->
+                <Border WidthRequest="96" HeightRequest="96"
+                        BackgroundColor="{StaticResource Green}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 48"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="✓" FontSize="48" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Label Text="Hisobingiz tayyor"
+               FontSize="26" FontAttributes="Bold"
+               TextColor="{StaticResource Ink}" CharacterSpacing="-0.4"
+               HorizontalOptions="Center" Margin="0,28,0,0"/>
+        <Label Text="SafeLink endi 24/7 sizni himoya qiladi.&#10;So'nggi qadam — brelokni ulash."
+               FontSize="14" TextColor="{StaticResource Muted}"
+               HorizontalTextAlignment="Center" HorizontalOptions="Center"
+               LineHeight="1.5" Margin="0,10,0,0"/>
+
+        <!-- Natijalar ro'yxati -->
+        <VerticalStackLayout Spacing="8" Margin="0,24,0,0">
+            <Border BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 12" Padding="14,10">
+                <HorizontalStackLayout Spacing="12">
+                    <Border BackgroundColor="{StaticResource GreenSoft}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                            WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                        <Label Text="✓" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Green}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Shaxs tasdiqlandi" FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+            <Border BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 12" Padding="14,10">
+                <HorizontalStackLayout Spacing="12">
+                    <Border BackgroundColor="{StaticResource GreenSoft}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                            WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                        <Label Text="✓" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Green}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Himoya orderi yuklandi" FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+            <Border BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 12" Padding="14,10">
+                <HorizontalStackLayout Spacing="12">
+                    <Border BackgroundColor="{StaticResource GreenSoft}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                            WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                        <Label Text="✓" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Green}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Ishonchli kontaktlar qo'shildi" FontSize="13" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="8" Margin="0,32,0,0">
+            <Button Text="Brelokni ulash"
+                    Command="{Binding PairDeviceCommand}"
+                    BackgroundColor="{StaticResource Navy}"
+                    TextColor="White" FontAttributes="Bold" FontSize="15"
+                    HeightRequest="56" CornerRadius="16"/>
+            <Button Text="Keyinroq"
+                    Command="{Binding SkipCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Navy2}"
+                    FontSize="14" FontAttributes="Bold"
+                    HeightRequest="48" BorderWidth="0"/>
+        </VerticalStackLayout>
+
+    </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

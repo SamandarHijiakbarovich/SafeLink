@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SafeLink.Models;
+using SafeLink.Services;
 
 namespace SafeLink.ViewModels;
 
@@ -12,17 +13,17 @@ namespace SafeLink.ViewModels;
 /// - Brelok holati kuzatiladi
 /// - SOS tugmasi bosilganda SosHoldPage ga o'tadi
 /// </summary>
-public partial class HomeViewModel : BaseViewModel
+public partial class HomeViewModel(SafeApiClient api) : BaseViewModel
 {
     // ─── Foydalanuvchi ────────────────────────────────────────
     [ObservableProperty]
-    private string _userName = "Madina Karimova";
+    private string _userName = "";
 
     [ObservableProperty]
-    private bool _hasProtectionOrder = true;
+    private bool _hasProtectionOrder;
 
     [ObservableProperty]
-    private string _protectionOrderInfo = "14-dekabr 2025-yilgacha · IIB Toshkent";
+    private string _protectionOrderInfo = "";
 
     // ─── Brelok holati ────────────────────────────────────────
     [ObservableProperty]
@@ -40,6 +41,43 @@ public partial class HomeViewModel : BaseViewModel
     public string BrelokStatus => BrelokConnected
         ? $"Brelok ulangan · {BrelokBattery}%"
         : "Brelok ulanmagan";
+
+    // ─── Ma'lumotlarni yuklash ────────────────────────────────
+    /// <summary>
+    /// Bosh sahifa ochilganda haqiqiy foydalanuvchi ma'lumotini API'dan yuklaydi.
+    /// </summary>
+    public async Task LoadAsync()
+    {
+        try
+        {
+            var p = await api.GetAsync<HomeProfile>("/profile");
+            if (p is null) return;
+
+            UserName = string.IsNullOrWhiteSpace(p.FullName) ? "Foydalanuvchi" : p.FullName;
+
+            HasProtectionOrder = !string.IsNullOrWhiteSpace(p.ProtectionOrderNumber);
+            if (HasProtectionOrder)
+            {
+                var muddat = p.ProtectionOrderExpiry is { } d
+                    ? $"{d:dd-MMMM yyyy}-gacha"
+                    : "muddatsiz";
+                ProtectionOrderInfo = $"№ {p.ProtectionOrderNumber} · {muddat}";
+            }
+            else
+            {
+                ProtectionOrderInfo = "Himoya orderi kiritilmagan";
+            }
+        }
+        catch
+        {
+            // Tarmoq xatosi — mavjud holatni saqlab qolamiz (soxta ma'lumot ko'rsatmaymiz)
+        }
+    }
+
+    record HomeProfile(
+        string FullName, string? NationalId, string PhoneNumber,
+        string? ProtectionOrderNumber, DateTime? ProtectionOrderExpiry,
+        string? BloodType, string? Allergies);
 
     // ─── Buyruqlar (Commands) ──────────────────────────────────
 
@@ -66,7 +104,8 @@ public partial class HomeViewModel : BaseViewModel
     [RelayCommand]
     private async Task OpenNotifications()
     {
-        // TODO: Xabarnomalar sahifasi
-        await Task.CompletedTask;
+        var page = Shell.Current?.CurrentPage;
+        if (page is not null)
+            await page.DisplayAlert("Xabarnomalar", "Hozircha yangi xabarnoma yo'q.", "OK");
     }
 }

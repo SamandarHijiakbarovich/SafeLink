@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels.Onboarding"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="SafeLink.Views.Onboarding.PhonePage"
+    x:DataType="vm:PhoneViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="0">
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,56,0,0">
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Telefon raqamingizni&#10;kiriting"
+                   FontSize="26" FontAttributes="Bold" TextColor="{StaticResource Ink}"
+                   CharacterSpacing="-0.4" LineHeight="1.2" Margin="0,32,0,0"/>
+            <Label Text="SMS orqali bir martalik tasdiqlash kodi yuboramiz."
+                   FontSize="14" TextColor="{StaticResource Muted}" LineHeight="1.5" Margin="0,10,0,0"/>
+
+            <!-- Telefon input -->
+            <Label Text="TELEFON RAQAM" FontSize="11" FontAttributes="Bold"
+                   TextColor="{StaticResource Muted}" CharacterSpacing="0.8" Margin="4,28,0,8"/>
+            <Grid ColumnDefinitions="96,*" ColumnSpacing="8">
+                <Border Grid.Column="0" BackgroundColor="{StaticResource Card}"
+                        StrokeThickness="1" Stroke="{StaticResource Line}"
+                        StrokeShape="RoundRectangle 14" HeightRequest="60" Padding="10,0">
+                    <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
+                        <Label Text="🇺🇿" FontSize="18"/>
+                        <Label Text="+998" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Ink}"/>
+                    </HorizontalStackLayout>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource Card}"
+                        StrokeThickness="2" Stroke="{StaticResource Navy}"
+                        StrokeShape="RoundRectangle 14" HeightRequest="60" Padding="16,0">
+                    <Entry Text="{Binding Phone}" Placeholder="(90) 123-45-67"
+                           Keyboard="Telephone" FontSize="17" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}" PlaceholderColor="{StaticResource Faint}"
+                           BackgroundColor="Transparent" IsEnabled="{Binding OtpSent, Converter={StaticResource InvertBool}}"/>
+                </Border>
+            </Grid>
+
+            <!-- OTP bloki -->
+            <Border IsVisible="{Binding OtpSent}"
+                    BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 18" Padding="16" Margin="0,22,0,0">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Tasdiqlash kodi" FontSize="13" FontAttributes="Bold"
+                               TextColor="{StaticResource Ink}"/>
+                        <Label Grid.Column="1" FontSize="12" FontAttributes="Bold"
+                               TextColor="{StaticResource Muted}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding Countdown}"/>
+                                    <Span Text="s"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+
+                    <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" HeightRequest="58" Padding="16,0">
+                        <Entry Text="{Binding OtpCode}" Placeholder="• • • • • •"
+                               Keyboard="Numeric" MaxLength="6"
+                               FontSize="26" FontAttributes="Bold"
+                               TextColor="{StaticResource Ink}"
+                               HorizontalTextAlignment="Center"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Label HorizontalOptions="Center" FontSize="12" TextColor="{StaticResource Muted}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Kod kelmadimi? "/>
+                                <Span Text="Qayta yuborish" TextColor="{StaticResource Navy2}" FontAttributes="Bold"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SendOtpCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Info -->
+            <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12" Padding="14" Margin="0,14,0,0">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="ℹ" FontSize="14" TextColor="{StaticResource Muted}" VerticalOptions="Start"/>
+                    <Label Text="Raqamingiz IIV ma'lumotlar bazasi bilan tekshiriladi."
+                           FontSize="12" TextColor="{StaticResource Muted}" LineHeight="1.5" HorizontalOptions="Fill"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Xato -->
+            <Label Text="{Binding ErrorText}" IsVisible="{Binding HasError}"
+                   FontSize="13" TextColor="{StaticResource Red}"
+                   HorizontalOptions="Center" Margin="0,12,0,0"/>
+
+            <!-- CTA -->
+            <Button Text="Davom etish"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                    BackgroundColor="{StaticResource Navy}"
+                    TextColor="White" FontAttributes="Bold" FontSize="15"
+                    HeightRequest="56" CornerRadius="16"
+                    Margin="0,32,0,0"
+                    Clicked="OnCtaClicked"/>
+
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                               Color="{StaticResource Navy}" HorizontalOptions="Center" Margin="0,8,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

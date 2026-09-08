@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.Officer.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    x:Class="SafeLink.Officer.Views.LoginPage"
+    x:DataType="vm:LoginViewModel"
+    ios:Page.UseSafeArea="True"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource Navy}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Dekorativ halqalar -->
+        <Grid HorizontalOptions="Center" VerticalOptions="Start" Margin="0,-80,0,0" InputTransparent="True">
+            <Ellipse WidthRequest="360" HeightRequest="360" Stroke="#14FFFFFF" StrokeThickness="1"/>
+            <Ellipse WidthRequest="260" HeightRequest="260" Stroke="#14FFFFFF" StrokeThickness="1"/>
+            <Ellipse WidthRequest="160" HeightRequest="160" Stroke="#14FFFFFF" StrokeThickness="1"/>
+        </Grid>
+
+        <Grid RowDefinitions="*,Auto" Padding="24,24,24,24">
+
+            <!-- Brand -->
+            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="6">
+                <Border WidthRequest="72" HeightRequest="72"
+                        BackgroundColor="#14FFFFFF" StrokeThickness="1" Stroke="#26FFFFFF"
+                        StrokeShape="RoundRectangle 18" HorizontalOptions="Center">
+                    <Grid>
+                        <Label Text="🛡" FontSize="38" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="★" FontSize="11" TextColor="{StaticResource Gold}"
+                               HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,8"/>
+                    </Grid>
+                </Border>
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="0" Margin="0,16,0,0">
+                    <Label Text="SafeLink" FontSize="28" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text=" · Dispatch" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource Gold}"/>
+                </HorizontalStackLayout>
+                <Label Text="IIV · OPERATIV BO'LIM"
+                       FontSize="12" FontAttributes="Bold" TextColor="#8CFFFFFF"
+                       CharacterSpacing="2" HorizontalOptions="Center"/>
+
+                <Label Text="Har bir soniya hayotni saqlaydi"
+                       FontSize="15" TextColor="#A6FFFFFF"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                       Margin="0,18,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Login karta -->
+            <Border Grid.Row="1"
+                    BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 24" Padding="24">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Xodim sifatida kirish" FontSize="20" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}"/>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="XIZMAT ID" FontSize="11" FontAttributes="Bold"
+                               TextColor="{StaticResource Muted}" CharacterSpacing="0.8"/>
+                        <Border BackgroundColor="{StaticResource BgMain}" StrokeThickness="1"
+                                Stroke="{StaticResource Line}" StrokeShape="RoundRectangle 12"
+                                HeightRequest="54" Padding="14,0">
+                            <Entry Text="{Binding ServiceId}" Placeholder="IIB-TSH-00000"
+                                   FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Ink}"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="PAROL" FontSize="11" FontAttributes="Bold"
+                               TextColor="{StaticResource Muted}" CharacterSpacing="0.8"/>
+                        <Border BackgroundColor="{StaticResource BgMain}" StrokeThickness="2"
+                                Stroke="{StaticResource Navy}" StrokeShape="RoundRectangle 12"
+                                HeightRequest="54" Padding="14,0">
+                            <Entry Text="{Binding Password}" IsPassword="True" Placeholder="••••••••"
+                                   FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Ink}"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <CheckBox IsChecked="{Binding TrustDevice}" Color="{StaticResource Navy}"
+                                  VerticalOptions="Center"/>
+                        <Label Text="Bu qurilmani ishonchli deb belgilash"
+                               FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Ink2}"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="{Binding ErrorText}" IsVisible="{Binding HasError}"
+                           TextColor="{StaticResource Red}" FontSize="13"/>
+
+                    <Button Text="Tizimga kirish"
+                            Command="{Binding LoginCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBool}}"
+                            BackgroundColor="{StaticResource Navy}" TextColor="White"
+                            FontAttributes="Bold" FontSize="15" HeightRequest="54" CornerRadius="14"/>
+
+                    <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                                       Color="{StaticResource Navy}" HeightRequest="22"/>
+
+                    <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10" Padding="12,10">
+                        <Label Text="Yo'qotgan parol uchun bo'lim boshlig'iga murojaat qiling"
+                               FontSize="11.5" TextColor="{StaticResource Muted}"
+                               HorizontalTextAlignment="Center"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

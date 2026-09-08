@@ -69,3 +69,8 @@ Desktop.ini
 *.env
 appsettings.Development.json
 secrets.json
+
+# Dev SQLite ma'lumotlar bazasi
+*.db
+*.db-shm
+*.db-wal

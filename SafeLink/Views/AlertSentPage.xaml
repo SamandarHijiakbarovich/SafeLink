@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="SafeLink.Views.AlertSentPage"
+    x:DataType="vm:AlertSentViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+            <!-- Hero -->
+            <Grid Grid.Row="0"
+                  RowDefinitions="Auto,Auto,Auto"
+                  BackgroundColor="{StaticResource Navy}"
+                  Padding="24,56,24,28">
+                <Grid.Clip>
+                    <RoundRectangleGeometry Rect="0,0,400,200" CornerRadius="0,0,28,28"/>
+                </Grid.Clip>
+                <Border Grid.Row="0"
+                        WidthRequest="72" HeightRequest="72"
+                        BackgroundColor="{StaticResource Green}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 36"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,18">
+                    <Label Text="✓"
+                           FontSize="36" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+                <Label Grid.Row="1"
+                       Text="Ogohlantirish yuborildi"
+                       FontSize="24" FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="-0.3"/>
+                <Label Grid.Row="2"
+                       Text="{Binding SentTime}"
+                       FontSize="13.5" TextColor="#B3FFFFFF"
+                       HorizontalOptions="Center"
+                       Margin="0,6,0,0"/>
+            </Grid>
+
+            <!-- Xarita -->
+            <Border Grid.Row="1"
+                    Margin="16,20,16,0"
+                    HeightRequest="168"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 20"
+                    BackgroundColor="#DCE5EE">
+                <Grid>
+                    <WebView Source="{Binding MapUrl}"
+                             IsVisible="{Binding HasMap}"
+                             HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Spacing="4"
+                                         IsVisible="{Binding HasMap, Converter={StaticResource InvertBool}}">
+                        <Label Text="📍" FontSize="28" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Border BackgroundColor="#F5FFFFFF"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="12,8"
+                            Margin="10"
+                            VerticalOptions="End">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Grid.Column="0" Text="📍" FontSize="16"
+                                   VerticalOptions="Center" Margin="0,0,8,0"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="1">
+                                <Label Text="{Binding Address}"
+                                       FontSize="12.5" FontAttributes="Bold"
+                                       TextColor="{StaticResource Ink}"/>
+                                <Label Text="±4 m aniqlik · GPS"
+                                       FontSize="11" TextColor="{StaticResource Muted}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Status karta -->
+            <Border Grid.Row="2"
+                    Margin="16,14,16,0"
+                    BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="18,16">
+                <VerticalStackLayout Spacing="0">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="POLITSIYA YO'LDA"
+                                   FontSize="11" FontAttributes="Bold"
+                                   TextColor="{StaticResource Muted}"
+                                   CharacterSpacing="1.2"/>
+                            <Label Text="{Binding PoliceEta}"
+                                   FontSize="22" FontAttributes="Bold"
+                                   TextColor="{StaticResource Ink}"
+                                   CharacterSpacing="-0.3"/>
+                            <Label Text="{Binding PoliceStatusText}"
+                                   IsVisible="{Binding HasPoliceStatus}"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource Green}"/>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource GreenSoft}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8"
+                                VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="6">
+                                <Ellipse x:Name="ActiveDot"
+                                         WidthRequest="7" HeightRequest="7"
+                                         Fill="{StaticResource Green}"
+                                         VerticalOptions="Center"/>
+                                <Label Text="Faol"
+                                       FontSize="12" FontAttributes="Bold"
+                                       TextColor="#15803D"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+                    <BoxView Color="{StaticResource Line}" HeightRequest="1" Margin="-18,0,-18,12"/>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="0,8">
+                        <Border Grid.Column="0" WidthRequest="34" HeightRequest="34"
+                                BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10" Margin="0,0,12,0">
+                            <Label Text="📞" FontSize="17" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="102-Favqulodda xizmati" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource Ink}"/>
+                            <Label Text="Murojaat #UZ-2510-7421" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" BackgroundColor="{StaticResource GreenSoft}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="8,4">
+                            <Label Text="Qabul qilindi" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource Green}"/>
+                        </Border>
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="0,8">
+                        <Border Grid.Column="0" WidthRequest="34" HeightRequest="34"
+                                BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10" Margin="0,0,12,0">
+                            <Label Text="👥" FontSize="17" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="3 ishonchli kontakt" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource Ink}"/>
+                            <Label Text="Onam, Aziza opa, Botir aka" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" BackgroundColor="{StaticResource GreenSoft}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="8,4">
+                            <Label Text="Xabardor" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource Green}"/>
+                        </Border>
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="0,8">
+                        <Border Grid.Column="0" WidthRequest="34" HeightRequest="34"
+                                BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10" Margin="0,0,12,0">
+                            <Label Text="🎙" FontSize="17" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Audio yozuv yuborilmoqda" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource Ink}"/>
+                            <Label Text="{Binding AudioDuration, StringFormat='Real vaqt · {0}'}" FontSize="11.5" TextColor="{StaticResource Muted}"/>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" BackgroundColor="{StaticResource GreenSoft}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="8,4">
+                            <Label Text="Davom etmoqda" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource Green}"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Operator tugmasi -->
+            <Button Grid.Row="3"
+                    Text="📞  Operator bilan bog'lanish"
+                    Command="{Binding CallOperatorCommand}"
+                    BackgroundColor="{StaticResource Navy}"
+                    TextColor="White"
+                    CornerRadius="16"
+                    HeightRequest="56"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    Margin="16,12,16,0"/>
+
+            <!-- Yolg'on signal -->
+            <Button Grid.Row="4"
+                    Text="Yolg'on signal — bekor qilish"
+                    Command="{Binding CancelFalseAlarmCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Red}"
+                    BorderWidth="0"
+                    HeightRequest="48"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    Margin="16,0,16,32"/>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

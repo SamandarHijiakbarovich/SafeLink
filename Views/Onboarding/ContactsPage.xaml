@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SafeLink.ViewModels.Onboarding"
+    xmlns:models="clr-namespace:SafeLink.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="SafeLink.Views.Onboarding.ContactsPage"
+    x:DataType="vm:ContactsViewModel"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BgMain}">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="0">
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,56,0,0">
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="22" HeightRequest="6" CornerRadius="3" Color="{StaticResource Navy}"/>
+                <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3" Color="{StaticResource Line2}"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Ishonchli kontaktlar" FontSize="26" FontAttributes="Bold"
+                   TextColor="{StaticResource Ink}" CharacterSpacing="-0.4" Margin="0,32,0,0"/>
+            <Label Text="Favqulodda chaqiriqda 3 yaqin kishingizga avtomatik xabar yuboriladi."
+                   FontSize="14" TextColor="{StaticResource Muted}" LineHeight="1.5" Margin="0,10,0,0"/>
+
+            <!-- Kontaktlar -->
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}"
+                                 Spacing="10" Margin="0,24,0,0">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:TrustedContact">
+                        <Border BackgroundColor="{StaticResource Card}"
+                                StrokeThickness="1" Stroke="{StaticResource Line}"
+                                StrokeShape="RoundRectangle 16" Padding="14,12">
+                            <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="12">
+                                <Grid Grid.Column="0" WidthRequest="44" HeightRequest="44">
+                                    <Ellipse WidthRequest="44" HeightRequest="44" Fill="{Binding AvatarColor}"/>
+                                    <Label Text="{Binding Initials}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Grid>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="{Binding FullName}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource Ink}"/>
+                                    <Label FontSize="12" TextColor="{StaticResource Muted}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Relationship}"/>
+                                                <Span Text=" · "/>
+                                                <Span Text="{Binding PhoneNumber}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <Border Grid.Column="2" BackgroundColor="{StaticResource GreenSoft}"
+                                        StrokeThickness="0" StrokeShape="RoundRectangle 99"
+                                        WidthRequest="26" HeightRequest="26" VerticalOptions="Center">
+                                    <Label Text="✓" FontSize="13" FontAttributes="Bold"
+                                           TextColor="{StaticResource Green}"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <!-- Kontakt qo'shish formasi -->
+            <Border IsVisible="{Binding ShowForm}"
+                    BackgroundColor="{StaticResource Card}"
+                    StrokeThickness="1" Stroke="{StaticResource Line}"
+                    StrokeShape="RoundRectangle 16" Padding="16" Margin="0,10,0,0">
+                <VerticalStackLayout Spacing="10">
+                    <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" Padding="14,0" HeightRequest="50">
+                        <Entry Text="{Binding NewName}" Placeholder="Ism Familiya"
+                               FontSize="14" TextColor="{StaticResource Ink}"
+                               PlaceholderColor="{StaticResource Faint}" BackgroundColor="Transparent"/>
+                    </Border>
+                    <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" Padding="14,0" HeightRequest="50">
+                        <Entry Text="{Binding NewPhone}" Placeholder="+998 90 000 00 00"
+                               Keyboard="Telephone" FontSize="14" TextColor="{StaticResource Ink}"
+                               PlaceholderColor="{StaticResource Faint}" BackgroundColor="Transparent"/>
+                    </Border>
+                    <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" Padding="14,0" HeightRequest="50">
+                        <Entry Text="{Binding NewRelation}" Placeholder="Onam, Opam, Akam..."
+                               FontSize="14" TextColor="{StaticResource Ink}"
+                               PlaceholderColor="{StaticResource Faint}" BackgroundColor="Transparent"/>
+                    </Border>
+                    <Button Text="Qo'shish" Command="{Binding AddContactCommand}"
+                            BackgroundColor="{StaticResource Navy}" TextColor="White"
+                            FontAttributes="Bold" HeightRequest="46" CornerRadius="12"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Qo'shish tugmasi -->
+            <Border IsVisible="{Binding ShowForm, Converter={StaticResource InvertBool}}"
+                    BackgroundColor="Transparent" StrokeThickness="2" Stroke="{StaticResource Line2}"
+                    StrokeShape="RoundRectangle 16" Padding="14,16" Margin="0,10,0,0">
+                <HorizontalStackLayout Spacing="14">
+                    <Grid WidthRequest="44" HeightRequest="44">
+                        <Ellipse WidthRequest="44" HeightRequest="44" Fill="{StaticResource CardAlt}"/>
+                        <Label Text="+" FontSize="22" TextColor="{StaticResource Muted}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Grid>
+                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                        <Label Text="Yana kontakt qo'shish" FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource Ink2}"/>
+                        <Label Text="Maksimal 5 ta · ixtiyoriy" FontSize="12" TextColor="{StaticResource Muted}"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenFormCommand}"/>
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border BackgroundColor="{StaticResource CardAlt}" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12" Padding="14" Margin="0,14,0,0">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="ℹ" FontSize="14" TextColor="{StaticResource Muted}" VerticalOptions="Start"/>
+                    <Label Text="Kontaktlar SMS orqali ogohlantiriladi va joylashuvingiz xaritada ko'rinadi."
+                           FontSize="12" TextColor="{StaticResource Muted}" LineHeight="1.5" HorizontalOptions="Fill"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <Button Text="Davom etish" Command="{Binding ContinueCommand}"
+                    BackgroundColor="{StaticResource Navy}" TextColor="White"
+                    FontAttributes="Bold" FontSize="15" HeightRequest="56"
+                    CornerRadius="16" Margin="0,24,0,40"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
